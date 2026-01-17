@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.http import HttpResponse
 from django.urls import path, include
-from applications.views import get_master_latex, update_master_latex
+from applications.views import get_master_latex, update_master_latex, JobCreateView
 
 urlpatterns = [
     path("", lambda request: HttpResponse("Job Application Organizer API", content_type="text/plain")),
@@ -25,5 +25,6 @@ urlpatterns = [
     path("api/get_master_latex", get_master_latex),
     path("api/update_master_latex", update_master_latex),
     path('api/', include('applications.urls')),
+    path("api/jobs/", JobCreateView.as_view()),#Umran
 ]
 
