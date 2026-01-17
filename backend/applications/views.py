@@ -54,6 +54,6 @@ def update_master_latex(request):
     return JsonResponse({"message": "updated"}, status=200)
 
 
-class JobListCreate(generics.ListCreateAPIView):
+class JobCreateView(generics.CreateAPIView):
     queryset = JobApplication.objects.all()
     serializer_class = JobSerializer
