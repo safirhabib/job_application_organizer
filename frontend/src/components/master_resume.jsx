@@ -23,7 +23,7 @@ const MasterResume = () => {
 
     const saveResume = async () => {
         console.log("saving resume...")
-        const res = await update_master_resume();
+        const res = await update_master_resume(masterResume);
         if (res.status == 200) {
             setSuccessMessage("Resume saved");
             setShowSuccessMessage(true);
