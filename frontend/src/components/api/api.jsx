@@ -13,6 +13,13 @@ export const get_master_resume = async () =>  {
 
     return {
         status: 200,
-        data: {content: res.data.latex_source}
+        data: {content: res.data.latex_source},
     };
+}
+
+export const update_master_resume = async () => {
+    return {
+        status: 200,
+        data: {content: "success"},
+    }
 }
