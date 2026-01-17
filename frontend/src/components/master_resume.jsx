@@ -5,7 +5,9 @@ import "../../src/index.css";
 const MasterResume = () => {
     const [masterResume, setMasterResume] = useState("");
     const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+    const [showErrorMessage, setShowErrorMessage] = useState(false);
     const [successMessage, setSuccessMessage] = useState("");
+    const [errorMessage, setErrorMessage] = useState("");
 
     useEffect(() => {
         const fetch_master_resume  = async () => {
@@ -24,10 +26,23 @@ const MasterResume = () => {
     const saveResume = async () => {
         console.log("saving resume...")
         const res = await update_master_resume(masterResume);
-        if (res.status == 200) {
+        console.log(res)
+        if (res && res.status == 200) {
             setSuccessMessage("Resume saved");
             setShowSuccessMessage(true);
-            // setTimeout(() => setShowSuccessMessage(false), 3000);
+            setTimeout(() => {
+                setShowSuccessMessage(false);
+                setSuccessMessage("")
+            }, 3000);
+        }
+
+        else {
+            setErrorMessage("Error: Unable to save resume");
+            setShowErrorMessage(true);
+            setTimeout(() => {
+                setShowErrorMessage(false);
+                setErrorMessage("")
+            }, 3000);
         }
     }
 
@@ -49,10 +64,17 @@ const MasterResume = () => {
             </button>
             
             {showSuccessMessage && (
-            <div className="bg-black-100 text-black border border-green-300 px-4 py-2 rounded mb-4">
+            <div className="bg-green-800 text-white opacity-90 px-4 py-2 rounded mb-4">
                 {successMessage}
             </div>
             )}
+
+            {showErrorMessage && (
+            <div className="bg-red-800 text-white opacity-90 px-4 py-2 rounded mb-4">
+                {errorMessage}
+            </div>
+            )}
+
         </>
     )
 }
