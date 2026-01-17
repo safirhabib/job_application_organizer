@@ -5,7 +5,7 @@
 
 You can manually create the jobs and update their status as an administrator of the application, we do not expect a user management system for job posters.
 
---
+---
 
 ## Requirements
 - Python 3.10+
