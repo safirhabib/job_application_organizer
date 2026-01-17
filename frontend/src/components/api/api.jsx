@@ -15,13 +15,16 @@ export const get_master_resume = async () => {
 };
 
 export const update_master_resume = async (latex_source) => {
-  const res = await axios.post(
+  let res = await axios.post(
     `${backend}/api/update_master_latex`,
     { latex_source },
     { withCredentials: true }
   );
+
+  res = res ? res.status : 404;
+
   return {
-    status: res.status,
+    status: res,
     data: { content: "success" },
   };
 };
