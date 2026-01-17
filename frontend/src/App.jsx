@@ -1,3 +1,12 @@
+<<<<<<< HEAD
+=======
+import { useState } from 'react'
+import reactLogo from './assets/react.svg'
+import viteLogo from '/vite.svg'
+import "./index.css";
+import MasterResume from './components/master_resume'
+import JobForm from './JobForm'; //Umran US1
+>>>>>>> umran
 
 import React, { useMemo, useState } from "react";
 import { useLocalStorage } from "./hooks/useLocalStorage";
@@ -65,6 +74,7 @@ export default function App() {
   }
 
   return (
+<<<<<<< HEAD
     <div className="app">
       <Header subtitle="Job Application Organizer (Prototype)" />
 
@@ -120,5 +130,12 @@ export default function App() {
       </footer>
     </div>
   );
+=======
+    <div>
+      <MasterResume />
+      <JobForm />
+    </div>
+  )
+>>>>>>> umran
 }
 

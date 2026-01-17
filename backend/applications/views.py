@@ -34,6 +34,7 @@ def get_master_latex(request):
         status=200
     )
 
+<<<<<<< HEAD
 
 @csrf_exempt
 @require_http_methods(["POST"])
@@ -55,5 +56,8 @@ def update_master_latex(request):
 
 
 class JobListCreate(generics.ListCreateAPIView):
+=======
+class JobCreateView(generics.CreateAPIView):
+>>>>>>> umran
     queryset = JobApplication.objects.all()
     serializer_class = JobSerializer

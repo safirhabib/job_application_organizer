@@ -16,12 +16,17 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+<<<<<<< HEAD
 from applications.views import get_master_latex, update_master_latex
+=======
+from applications.views import get_master_latex, JobCreateView
+>>>>>>> umran
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/get_master_latex", get_master_latex),
     path("api/update_master_latex", update_master_latex),
     path('api/', include('applications.urls')),
+    path("api/jobs/", JobCreateView.as_view()),#Umran
 ]
 

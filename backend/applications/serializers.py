@@ -1,7 +1,7 @@
 from rest_framework import serializers
-from .models import JobApplication  # make sure this model exists
+from .models import JobApplication
 
-class JobSerializer(serializers.ModelSerializer):
+def JobSerializer():
     class Meta:
         model = JobApplication
-        fields = '__all__'  # or list the fields explicitly
+        fields = "__all__"
