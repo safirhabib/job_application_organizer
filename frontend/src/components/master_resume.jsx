@@ -27,6 +27,7 @@ const MasterResume = () => {
         if (res.status == 200) {
             setSuccessMessage("Resume saved");
             setShowSuccessMessage(true);
+            // setTimeout(() => setShowSuccessMessage(false), 3000);
         }
     }
 
@@ -47,8 +48,8 @@ const MasterResume = () => {
                 Save
             </button>
             
-            {successMessage && (
-            <div className="bg-green-100 text-black-800 border border-green-300 px-4 py-2 rounded mb-4">
+            {showSuccessMessage && (
+            <div className="bg-black-100 text-black border border-green-300 px-4 py-2 rounded mb-4">
                 {successMessage}
             </div>
             )}
