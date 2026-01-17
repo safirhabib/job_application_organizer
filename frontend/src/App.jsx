@@ -1,13 +1,3 @@
-<<<<<<< HEAD
-=======
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import "./index.css";
-import MasterResume from './components/master_resume'
-import JobForm from './JobForm'; //Umran US1
->>>>>>> umran
-
 import React, { useMemo, useState } from "react";
 import { useLocalStorage } from "./hooks/useLocalStorage";
 import { uid } from "./utils/uid";
@@ -17,6 +7,8 @@ import ApplicationList from "./components/ApplicationList";
 import ApplicationForm from "./components/ApplicationForm.jsx";
 import ResumeEditor from "./components/ResumeEditor";
 import ReminderPanel from "./components/ReminderPanel";
+import MasterResume from './components/master_resume';
+import JobForm from './JobForm';
 
 const DEFAULT_STATUSES = ["Applied", "Interview", "Offer", "Rejection"];
 
@@ -45,7 +37,7 @@ export default function App() {
       notes: app.notes ?? "",
       followUpDate: app.followUpDate || "",
       tailoredResume: app.tailoredResume ?? "",
-      communications: [] // {id, date, type, summary}
+      communications: []
     };
     setApps([item, ...apps]);
     setSelectedId(item.id);
@@ -74,14 +66,13 @@ export default function App() {
   }
 
   return (
-<<<<<<< HEAD
     <div className="app">
       <Header subtitle="Job Application Organizer (Prototype)" />
 
       <Tabs
         value={tab}
         onChange={setTab}
-        items={["Applications", "Add New", "Resumes", "Reminders"]}
+        items={["Applications", "Add New", "Resumes", "Reminders", "MasterResume", "JobForm"]}
       />
 
       <div className="grid">
@@ -122,6 +113,9 @@ export default function App() {
               }}
             />
           )}
+
+          {tab === "MasterResume" && <MasterResume />}
+          {tab === "JobForm" && <JobForm />}
         </div>
       </div>
 
@@ -130,12 +124,4 @@ export default function App() {
       </footer>
     </div>
   );
-=======
-    <div>
-      <MasterResume />
-      <JobForm />
-    </div>
-  )
->>>>>>> umran
 }
-
