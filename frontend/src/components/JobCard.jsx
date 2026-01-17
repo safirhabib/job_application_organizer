@@ -2,14 +2,8 @@ import React from 'react';
 import { AlertCircle } from 'lucide-react'; // Great for US6 visual flair
 
 const JobCard = ({ job }) => {
-  
-  const getAlertStatus = (dateApplied) => {
-    const diffTime = Math.abs(new Date() - new Date(dateApplied));
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
-    return diffDays > 7; 
-  };
 
-  const isStale = getAlertStatus(job.date_applied);
+  const isStale = job.is_stale();
 
   return (
     <div className={`p-4 m-2 rounded-lg shadow-sm border-2 ${isStale ? 'border-red-500 bg-red-50' : 'border-gray-200 bg-white'}`}>
@@ -18,8 +12,9 @@ const JobCard = ({ job }) => {
         
         {/* US6: The Alert Icon only shows if it is stale */}
         {isStale && (
-          <div className="text-red-600 animate-pulse" title="Over 7 days since applied!">
+          <div className="flex items-center gap-1 text-red-600 animate-pulse" title="No updates in 7+ days">
             <AlertCircle size={20} />
+            Please follow up with this company
           </div>
         )}
       </div>
