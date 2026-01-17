@@ -39,11 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'applications',  
-    'rest_framework',  
-
-    'applications',
     'rest_framework', #Umran US1
-    #'applications.apps.ApplicationsConfig'  
 ]
 
 MIDDLEWARE = [

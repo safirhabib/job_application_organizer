@@ -1,6 +1,8 @@
 from django.urls import path
-from .views import JobListCreate
+from .views import JobCreateView
+from applications.views import get_master_latex, JobCreateView
 
 urlpatterns = [
-    path('jobs/', JobListCreate.as_view(), name='job-list-create'),
+    path('jobs/', JobCreateView.as_view(), name='job-list-create'),
+    path("api/jobs/", JobCreateView.as_view()),
 ]

@@ -5,19 +5,6 @@ from rest_framework import generics
 from .models import JobApplication
 from .serializers import JobSerializer  # THIS MUST MATCH EXACTLY
 
-<<<<<<< HEAD
-#Umran US1
-from rest_framework import generics
-from .models import JobApplication
-from .serializers import JobApplicationSerializer
-
-def home(request):
-    return HttpResponse("Django is working ✅")
-
-class JobCreateView(generics.CreateAPIView):
-    queryset = JobApplication.objects.all()
-    serializer_class = JobApplicationSerializer
-=======
 def get_master_latex(request):
     if not request.user.is_authenticated:
         return JsonResponse({"detail": "Authentication required"}, status=401)
@@ -37,7 +24,6 @@ def get_master_latex(request):
         status=200
     )
 
-class JobListCreate(generics.ListCreateAPIView):
+class JobCreateView(generics.CreateAPIView):
     queryset = JobApplication.objects.all()
     serializer_class = JobSerializer
->>>>>>> b4f8dc308642e0a165b7162f6cbbd3728766c461
