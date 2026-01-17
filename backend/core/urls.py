@@ -22,6 +22,6 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/master_latex", get_master_latex),
     path('api/', include('applications.urls')),
-    path("api/jobs/", JobCreateView.as_view()),
+    path("api/jobs/", JobCreateView.as_view()),#Umran
 ]
 
