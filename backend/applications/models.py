@@ -7,7 +7,7 @@ class MasterResume(models.Model):
     user = models.OneToOneField(
         User,
         on_delete=models.CASCADE,
-        related_name="masterResume"
+        related_name="MasterResume"
     )
 
     created_at = models.DateTimeField(auto_now_add=True)
@@ -15,7 +15,9 @@ class MasterResume(models.Model):
 
     def get_jake_template():
         with open("jake_template.tex", 'r') as f:
+            print("file found")
             return f.read()
+        print("file not found")
         return None
 
     latex_source = models.TextField(default=get_jake_template())
