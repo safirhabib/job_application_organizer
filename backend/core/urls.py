@@ -15,6 +15,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
+<<<<<<< HEAD
 from django.urls import path
 from applications.views import home, JobCreateView #"JobCreateView" added for US1 by Umran
 
@@ -22,4 +23,14 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("", home),
     path("api/jobs/", JobCreateView.as_view())
+=======
+from django.urls import path, include
+from applications.views import get_master_latex
+
+urlpatterns = [
+    path("admin/", admin.site.urls),
+    path("api/master_latex", get_master_latex),
+    path('api/', include('applications.urls')),
+>>>>>>> b4f8dc308642e0a165b7162f6cbbd3728766c461
 ]
+

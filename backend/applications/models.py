@@ -7,7 +7,7 @@ class MasterResume(models.Model):
     user = models.OneToOneField(
         User,
         on_delete=models.CASCADE,
-        related_name="masterResume"
+        related_name="MasterResume"
     )
 
     created_at = models.DateTimeField(auto_now_add=True)
@@ -15,10 +15,12 @@ class MasterResume(models.Model):
 
     def get_jake_template():
         with open("jake_template.tex", 'r') as f:
+            print("file found")
             return f.read()
+        print("file not found")
         return None
 
-    latex_template = models.TextField(default=get_jake_template())
+    latex_source = models.TextField(default=get_jake_template())
 
     def __str__(self):
         return f"This object was created at {self.created_at} and last updated at {self.updated_at}"
@@ -44,7 +46,7 @@ class TailoredResume(models.Model):
     # For Safir's US4
     job = models.OneToOneField(JobApplication, on_delete=models.CASCADE)
     content = models.TextField()
-
+    
 class CommLog(models.Model):
     # For Liqi Yin's US5
     job = models.ForeignKey(JobApplication, on_delete=models.CASCADE, related_name='logs')
