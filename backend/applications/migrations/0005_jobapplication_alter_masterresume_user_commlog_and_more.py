@@ -8,7 +8,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('core', '0004_masterresume_user'),
+        ('applications', '0004_masterresume_user'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
@@ -34,7 +34,7 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('note', models.TextField()),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('job', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='logs', to='core.jobapplication')),
+                ('job', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='logs', to='applications.jobapplication')),
             ],
         ),
         migrations.CreateModel(
@@ -42,7 +42,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('content', models.TextField()),
-                ('job', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to='core.jobapplication')),
+                ('job', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to='applications.jobapplication')),
             ],
         ),
     ]

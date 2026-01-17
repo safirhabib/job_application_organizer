@@ -36,6 +36,8 @@ python manage.py makemigrations
 # apply database migrations
 python manage.py migrate
 
+pip install django-cors-headers
+
 # create admin user
 python manage.py createsuperuser
 

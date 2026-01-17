@@ -43,7 +43,7 @@ class TailoredResume(models.Model):
     # For Safir's US4
     job = models.OneToOneField(JobApplication, on_delete=models.CASCADE)
     content = models.TextField()
-
+    
 class CommLog(models.Model):
     # For Liqi Yin's US5
     job = models.ForeignKey(JobApplication, on_delete=models.CASCADE, related_name='logs')

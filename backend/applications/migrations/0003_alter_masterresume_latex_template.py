@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('core', '0002_masterresume_latex_template_and_more'),
+        ('applications', '0002_masterresume_latex_template_and_more'),
     ]
 
     operations = [
