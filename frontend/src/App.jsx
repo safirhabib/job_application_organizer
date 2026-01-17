@@ -5,9 +5,9 @@ import { uid } from "./utils/uid";
 import Header from "./components/header.jsx";
 import Tabs from "./components/Tabs";
 import ApplicationList from "./components/ApplicationList";
-import ApplicationForm from "./components/ApplicationForm.jsx";
-import ResumeEditor from "./components/ResumeEditor";
+import ApplicationForm from "./components/ApplicationForm.jsx";;
 import ReminderPanel from "./components/ReminderPanel";
+import MasterResume from "./components/master_resume.jsx";
 
 const DEFAULT_STATUSES = ["Applied", "Interview", "Offer", "Rejection"];
 
@@ -93,14 +93,7 @@ export default function App() {
           )}
 
           {tab === "Resumes" && (
-            <ResumeEditor
-              masterResume={masterResume}
-              onSaveMaster={setMasterResume}
-              selected={selected}
-              onSelectId={setSelectedId}
-              apps={apps}
-              onUpdateApp={updateApp}
-            />
+            <MasterResume />
           )}
 
           {tab === "Reminders" && (
