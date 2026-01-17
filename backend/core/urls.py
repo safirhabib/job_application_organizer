@@ -16,9 +16,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from applications.views import home
+from applications.views import home, JobCreateView #"JobCreateView" added for US1 by Umran
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", home),
+    path("api/jobs/", JobCreateView.as_view())
 ]

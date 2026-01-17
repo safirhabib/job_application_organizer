@@ -37,6 +37,9 @@ class JobApplication(models.Model):
     date_applied = models.DateField()
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='APPLIED')
 
+    def __str__(self):
+        return f"{self.company} - {self.position}"
+
 class TailoredResume(models.Model):
     # For Safir's US4
     job = models.OneToOneField(JobApplication, on_delete=models.CASCADE)
