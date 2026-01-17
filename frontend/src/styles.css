@@ -67,6 +67,8 @@
   .detailHeader { display: flex; align-items: start; justify-content: space-between; gap: 12px; }
   
   .section { margin-top: 14px; border-top: 1px solid #eef0f6; padding-top: 14px; }
+  .sectionHeader { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .actions { display: flex; gap: 8px; flex-wrap: wrap; }
   .titleInput { font-weight: 700; }
   
   .logList { list-style: none; padding: 0; margin: 10px 0 0; display: grid; gap: 8px; }

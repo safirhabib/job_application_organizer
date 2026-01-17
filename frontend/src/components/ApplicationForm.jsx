@@ -11,6 +11,23 @@ export default function ApplicationForm({ statuses, onSubmit }) {
     notes: ""
   });
 
+  const set = (key, val) => {
+    setForm((p) => ({ ...p, [key]: val }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!form.company.trim() || !form.position.trim()) return;
+    onSubmit(form);
+    setForm({
+      company: "",
+      position: "",
+      dateApplied: today,
+      status: statuses[0],
+      followUpDate: "",
+      notes: ""
+    });
+  };
 
   return (
     <div>
@@ -56,21 +73,4 @@ export default function ApplicationForm({ statuses, onSubmit }) {
       </form>
     </div>
   );
-}
-function set(key, val) {
-  setForm((p) => ({ ...p, [key]: val }));
-}
-
-function handleSubmit(e) {
-  e.preventDefault();
-  if (!form.company.trim() || !form.position.trim()) return;
-  onSubmit(form);
-  setForm({
-    company: "",
-    position: "",
-    dateApplied: today,
-    status: statuses[0],
-    followUpDate: "",
-    notes: ""
-  });
 }
