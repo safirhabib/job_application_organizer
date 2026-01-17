@@ -15,11 +15,6 @@ export default function App() {
   const [tab, setTab] = useState("Applications");
 
   const [apps, setApps] = useLocalStorage("jao_apps_v1", []);
-  const [masterResume, setMasterResume] = useLocalStorage("jao_master_resume_v1", {
-    title: "Master Resume",
-    content: "Paste your master resume here...\n\n• Education...\n• Projects...\n• Experience..."
-  });
-
   const [selectedId, setSelectedId] = useState(null);
   const selected = useMemo(
     () => apps.find(a => a.id === selectedId) ?? null,
@@ -94,8 +89,6 @@ export default function App() {
 
           {tab === "Resumes" && (
             <ResumeEditor
-              masterResume={masterResume}
-              onSaveMaster={setMasterResume}
               selected={selected}
               onSelectId={setSelectedId}
               apps={apps}
@@ -116,7 +109,7 @@ export default function App() {
       </div>
 
       <footer className="footer">
-        <span>Data is saved locally in your browser (LocalStorage).</span>
+        <span>Applications are saved locally; resumes are saved on the server.</span>
       </footer>
     </div>
   );

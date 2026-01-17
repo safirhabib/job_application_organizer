@@ -41,8 +41,11 @@ class JobApplication(models.Model):
 
 class TailoredResume(models.Model):
     # For Safir's US4
-    job = models.OneToOneField(JobApplication, on_delete=models.CASCADE)
+    job = models.OneToOneField(JobApplication, on_delete=models.CASCADE, null=True, blank=True)
+    client_job_id = models.CharField(max_length=64, unique=True, null=True, blank=True)
     content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     
 class CommLog(models.Model):
     # For Liqi Yin's US5
