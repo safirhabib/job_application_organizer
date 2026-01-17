@@ -1,3 +1,49 @@
 from django.db import models
+from datetime import datetime
+from django.contrib.auth.models import User
 
 # Create your models here.
+class MasterResume(models.Model):
+    user = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE,
+        related_name="masterResume"
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def get_jake_template():
+        with open("jake_template.tex", 'r') as f:
+            return f.read()
+        return None
+
+    latex_template = models.TextField(default=get_jake_template())
+
+    def __str__(self):
+        return f"This object was created at {self.created_at} and last updated at {self.updated_at}"
+
+class JobApplication(models.Model):
+    # For Ali's US2
+    STATUS_CHOICES = [
+        ('APPLIED', 'Applied'),
+        ('INTERVIEW', 'Interview'),
+        ('OFFER', 'Offer'),
+        ('REJECTED', 'Rejected'),
+    ]
+    # For Umran's US1
+    company = models.CharField(max_length=255)
+    role = models.CharField(max_length=255)
+    date_applied = models.DateField()
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='APPLIED')
+
+class TailoredResume(models.Model):
+    # For Safir's US4
+    job = models.OneToOneField(JobApplication, on_delete=models.CASCADE)
+    content = models.TextField()
+
+class CommLog(models.Model):
+    # For Liqi Yin's US5
+    job = models.ForeignKey(JobApplication, on_delete=models.CASCADE, related_name='logs')
+    note = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
