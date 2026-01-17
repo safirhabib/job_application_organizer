@@ -18,7 +18,7 @@ class MasterResume(models.Model):
             return f.read()
         return None
 
-    latex_template = models.TextField(default=get_jake_template())
+    latex_source = models.TextField(default=get_jake_template())
 
     def __str__(self):
         return f"This object was created at {self.created_at} and last updated at {self.updated_at}"
