@@ -8,7 +8,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('core', '0003_alter_masterresume_latex_template'),
+        ('applications', '0003_alter_masterresume_latex_template'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
