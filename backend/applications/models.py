@@ -21,8 +21,8 @@ class MasterResume(models.Model):
         print("file not found")
         return None
 
-    latex_source = models.TextField(default=get_jake_template())
-
+    latex_source = models.TextField(default="") # Or use a static string for now to avoid file errors
+    
     def __str__(self):
         return f"This object was created at {self.created_at} and last updated at {self.updated_at}"
 

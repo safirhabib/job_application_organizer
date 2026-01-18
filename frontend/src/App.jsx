@@ -1,5 +1,5 @@
-import React, { useMemo, useState } from "react";
-import { useLocalStorage } from "./hooks/useLocalStorage";
+import React, { useMemo, useState, useEffect } from "react";
+import axios from "axios"; // Aalpesh, ensure you ran 'npm install axios'
 import { uid } from "./utils/uid";
 import Header from "./components/header.jsx";
 import ApplicationList from "./components/ApplicationList";
@@ -13,33 +13,67 @@ const DEFAULT_STATUSES = ["Applied", "Interview", "Offer", "Rejection"];
 
 export default function App() {
   const [tab, setTab] = useState("Dashboard");
-
-  const [apps, setApps] = useLocalStorage("jao_apps_v1", []);
+  const [apps, setApps] = useState([]); // Aalpesh, we now use State instead of LocalStorage
   const [selectedId, setSelectedId] = useState(null);
+
+  // 1. AALPESH'S LIVE DATA FETCH
+  useEffect(() => {
+    const loadJobs = async () => {
+      try {
+        // This hits your Django server at Port 8000
+        const response = await axios.get("http://127.0.0.1:8000/api/jobs/");
+        
+        // Aalpesh, we transform Django's data format into your React format
+        const formatted = response.data.map(job => ({
+          id: job.id,
+          company: job.company,
+          position: job.role, // Mapping 'role' to 'position'
+          dateApplied: job.date_applied,
+          // This ensures "APPLIED" becomes "Applied" to match your DEFAULT_STATUSES
+          status: job.status.charAt(0).toUpperCase() + job.status.slice(1).toLowerCase(),
+          notes: "",
+          communications: []
+        }));
+        setApps(formatted);
+      } catch (err) {
+        console.error("Aalpesh, the API fetch failed. Is the backend running?", err);
+      }
+    };
+    loadJobs();
+  }, []);
+
   const selected = useMemo(
     () => apps.find((a) => a.id === selectedId) ?? null,
     [apps, selectedId]
   );
 
-  function addApp(app) {
-    const item = {
-      id: uid(),
-      company: app.company.trim(),
-      position: app.position.trim(),
-      dateApplied: app.dateApplied,
-      status: app.status,
-      notes: app.notes ?? "",
-      followUpDate: app.followUpDate || "",
-      tailoredResume: app.tailoredResume ?? "",
-      communications: [],
-    };
-    setApps([item, ...apps]);
-    setSelectedId(item.id);
-    setTab("Applications"); // fine to leave, but we send user back to Dashboard after submit below
+  // 2. AALPESH'S SYNCED ADD FUNCTION
+  async function addApp(app) {
+    try {
+      const response = await axios.post("http://127.0.0.1:8000/api/jobs/", {
+        company: app.company.trim(),
+        role: app.position.trim(),
+        date_applied: app.dateApplied,
+        status: app.status.toUpperCase(), // Backend usually prefers uppercase
+      });
+
+      const newItem = {
+        ...response.data,
+        id: response.data.id,
+        position: response.data.role,
+        status: response.data.status.charAt(0).toUpperCase() + response.data.status.slice(1).toLowerCase(),
+      };
+
+      setApps([newItem, ...apps]);
+      setTab("Dashboard");
+    } catch (err) {
+      console.error("Aalpesh, failed to save job to database:", err);
+    }
   }
 
   function updateApp(id, patch) {
     setApps(apps.map((a) => (a.id === id ? { ...a, ...patch } : a)));
+    // Note: To be fully persistent, Aalpesh, you'd add an axios.patch call here later.
   }
 
   function deleteApp(id) {
@@ -67,7 +101,7 @@ export default function App() {
         <div className="panel">
           {tab !== "Dashboard" && (
             <div style={{ marginBottom: 12 }}>
-              <button onClick={() => setTab("Dashboard")}>← Back</button>
+              <button onClick={() => setTab("Dashboard")}>← Back to Dashboard</button>
             </div>
           )}
 
@@ -88,16 +122,12 @@ export default function App() {
           {tab === "Add New" && (
             <ApplicationForm
               statuses={DEFAULT_STATUSES}
-              onSubmit={(app) => {
-                addApp(app);
-                setTab("Dashboard");
-              }}
+              onSubmit={addApp}
             />
           )}
 
           {tab === "MasterResume" && <MasterResume />}
 
-          {/* Optional: keep this hidden unless "View Details" is clicked */}
           {tab === "Applications" && (
             <ApplicationList
               apps={apps}
@@ -109,11 +139,13 @@ export default function App() {
               onAddCommunication={addCommunication}
             />
           )}
+          
+          {tab === "JobForm" && <JobForm />}
         </div>
       </div>
 
       <footer className="footer">
-        <span>Applications are saved locally; resumes are saved on the server.</span>
+        <span>Aalpesh, data is now live from the Django Server.</span>
       </footer>
     </div>
   );
