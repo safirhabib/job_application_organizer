@@ -2,7 +2,7 @@ import React, { useMemo, useState, useEffect } from "react";
 import axios from "axios";
 
 import Navbar from "./components/Navbar.jsx";
-import ApplicationList from "./components/ApplicationList.jsx";
+import ListView from "./components/ListView.jsx";
 import ApplicationForm from "./components/ApplicationForm.jsx";
 import KanbanDashboard from "./components/KanbanDashboard";
 import MasterResume from "./components/master_resume.jsx";
@@ -53,9 +53,21 @@ export default function App() {
   const [selectedId, setSelectedId] = useState(null);
 
   useEffect(() => {
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/d922bb2f-772d-476b-9c3a-9815e2d08fee',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'App.jsx:55',message:'page/view change',data:{page,view,appsCount:apps.length},timestamp:Date.now(),sessionId:'debug-session',runId:'pre-fix',hypothesisId:'H2'})}).catch(()=>{});
+    // #endregion
+  }, [page, view, apps.length]);
+
+  useEffect(() => {
     const loadJobs = async () => {
+      // #region agent log
+      fetch('http://127.0.0.1:7242/ingest/d922bb2f-772d-476b-9c3a-9815e2d08fee',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'App.jsx:56',message:'loadJobs start',data:{endpoint:`${API_BASE}/jobs/`},timestamp:Date.now(),sessionId:'debug-session',runId:'pre-fix',hypothesisId:'H1'})}).catch(()=>{});
+      // #endregion
       try {
         const response = await axios.get(`${API_BASE}/jobs/`);
+        // #region agent log
+        fetch('http://127.0.0.1:7242/ingest/d922bb2f-772d-476b-9c3a-9815e2d08fee',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'App.jsx:59',message:'loadJobs response',data:{status:response.status,items:Array.isArray(response.data)?response.data.length:null},timestamp:Date.now(),sessionId:'debug-session',runId:'pre-fix',hypothesisId:'H1'})}).catch(()=>{});
+        // #endregion
         const formatted = response.data.map((job) => ({
           id: job.id,
           company: job.company,
@@ -70,7 +82,13 @@ export default function App() {
           communications: mapLogsToCommunications(job.logs),
         }));
         setApps(formatted);
+        // #region agent log
+        fetch('http://127.0.0.1:7242/ingest/d922bb2f-772d-476b-9c3a-9815e2d08fee',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'App.jsx:72',message:'setApps done',data:{appsCount:formatted.length},timestamp:Date.now(),sessionId:'debug-session',runId:'pre-fix',hypothesisId:'H1'})}).catch(()=>{});
+        // #endregion
       } catch (err) {
+        // #region agent log
+        fetch('http://127.0.0.1:7242/ingest/d922bb2f-772d-476b-9c3a-9815e2d08fee',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'App.jsx:74',message:'loadJobs error',data:{message:err?.message},timestamp:Date.now(),sessionId:'debug-session',runId:'pre-fix',hypothesisId:'H1'})}).catch(()=>{});
+        // #endregion
         console.error("API fetch failed. Is the backend running?", err);
       }
     };
@@ -229,15 +247,14 @@ export default function App() {
                 </button>
               </div>
 
-              <ApplicationList
+              <ListView
                 apps={apps}
                 statuses={DEFAULT_STATUSES}
                 selectedId={selectedId}
-                onSelect={setSelectedId}
-                onDelete={deleteApp}
-                onUpdate={updateApp}
-                onAddCommunication={addCommunication}
-                onOpenJob={openJobPage}
+                onSelect={openJobPage}
+                onChangeView={() => setView("kanban")}
+                onChangeViewValue={(next) => setView(next)}
+                view={view}
               />
             </div>
           )}

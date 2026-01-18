@@ -3,16 +3,16 @@ set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
-echo "==> macOS setup (full) for Job Application Organizer"
+echo "==> macOS setup (lite) for Job Application Organizer"
 
 if ! command -v brew >/dev/null 2>&1; then
   echo "Homebrew not found. Install it from https://brew.sh and re-run."
   exit 1
 fi
 
-echo "==> Installing system deps (ImageMagick, Ghostscript, MacTeX)"
+echo "==> Installing system deps (ImageMagick, Ghostscript, BasicTeX)"
 brew install imagemagick ghostscript || true
-brew install --cask mactex-no-gui || true
+brew install --cask basictex || true
 
 echo "==> Ensuring TeX is on PATH"
 if ! command -v pdflatex >/dev/null 2>&1; then
