@@ -93,3 +93,7 @@ def _get_or_create_demo_user(request):
         return request.user
     user, _ = User.objects.get_or_create(username="demo")
     return user
+
+class JobDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = JobApplication.objects.all()
+    serializer_class = JobSerializer

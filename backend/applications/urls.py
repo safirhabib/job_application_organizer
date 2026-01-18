@@ -1,4 +1,5 @@
 from django.urls import path
+from .views import JobCreateView, JobDetailView # Import the new view
 from .views import (
     JobCreateView,
     get_tailored_latex,
@@ -11,4 +12,5 @@ urlpatterns = [
     path('tailored/<str:client_job_id>/', get_tailored_latex, name='get-tailored-latex'),
     path('tailored/<str:client_job_id>/update/', update_tailored_latex, name='update-tailored-latex'),
     path('tailored/<str:client_job_id>/clone/', clone_master_to_tailored, name='clone-tailored-latex'),
+    path('jobs/<int:pk>/', JobDetailView.as_view(), name='job-detail'),
 ]
