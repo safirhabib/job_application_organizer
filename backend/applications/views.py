@@ -8,8 +8,8 @@ from django.views.decorators.http import require_GET
 from .latex_converter import tex_to_pdf_bytes, pdf_page_count, pdf_page_to_png
 
 # Importing models and serializers
-from .models import MasterResume, JobApplication, TailoredResume
-from .serializers import JobSerializer
+from .models import MasterResume, JobApplication, TailoredResume, CommLog
+from .serializers import JobSerializer, CommLogSerializer
 
 class JobCreateView(generics.ListCreateAPIView):
     queryset = JobApplication.objects.all()
@@ -101,7 +101,6 @@ class JobDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = JobApplication.objects.all()
     serializer_class = JobSerializer
 
-
 def no_cache(resp: HttpResponse) -> HttpResponse:
     resp["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
     resp["Pragma"] = "no-cache"
@@ -168,3 +167,15 @@ def get_master_pdf(request):
             "latex_len": len(latex),
             "latex_head": latex[:120],
         }, status=500))
+
+class JobLogListCreateView(generics.ListCreateAPIView):
+    serializer_class = CommLogSerializer
+
+    def get_queryset(self):
+        job_id = self.kwargs["job_id"]
+        return CommLog.objects.filter(job_id=job_id).order_by("-timestamp", "-created_at")
+
+    def perform_create(self, serializer):
+        job_id = self.kwargs["job_id"]
+        serializer.save(job_id=job_id)
+
