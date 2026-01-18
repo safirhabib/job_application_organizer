@@ -2,13 +2,13 @@ import React, { useMemo, useState, useEffect } from "react";
 import axios from "axios";
 
 import Navbar from "./components/Navbar.jsx";
-import ApplicationList from "./components/ApplicationList.jsx";
+import ListView from "./components/ListView.jsx";
 import ApplicationForm from "./components/ApplicationForm.jsx";
 import KanbanDashboard from "./components/KanbanDashboard";
 import MasterResume from "./components/master_resume.jsx";
 import TailoredResumeEditor from "./components/TailoredResumeEditor.jsx";
 import JobDetailPage from "./components/JobDetailPage.jsx";
-
+main
 import { clone_tailored_resume, update_tailored_resume } from "./components/api/api";
 
 const API_BASE = "http://127.0.0.1:8000/api";
@@ -53,9 +53,21 @@ export default function App() {
   const [selectedId, setSelectedId] = useState(null);
 
   useEffect(() => {
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/d922bb2f-772d-476b-9c3a-9815e2d08fee',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'App.jsx:55',message:'page/view change',data:{page,view,appsCount:apps.length},timestamp:Date.now(),sessionId:'debug-session',runId:'pre-fix',hypothesisId:'H2'})}).catch(()=>{});
+    // #endregion
+  }, [page, view, apps.length]);
+
+  useEffect(() => {
     const loadJobs = async () => {
+      // #region agent log
+      fetch('http://127.0.0.1:7242/ingest/d922bb2f-772d-476b-9c3a-9815e2d08fee',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'App.jsx:56',message:'loadJobs start',data:{endpoint:`${API_BASE}/jobs/`},timestamp:Date.now(),sessionId:'debug-session',runId:'pre-fix',hypothesisId:'H1'})}).catch(()=>{});
+      // #endregion
       try {
         const response = await axios.get(`${API_BASE}/jobs/`);
+        // #region agent log
+        fetch('http://127.0.0.1:7242/ingest/d922bb2f-772d-476b-9c3a-9815e2d08fee',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'App.jsx:59',message:'loadJobs response',data:{status:response.status,items:Array.isArray(response.data)?response.data.length:null},timestamp:Date.now(),sessionId:'debug-session',runId:'pre-fix',hypothesisId:'H1'})}).catch(()=>{});
+        // #endregion
         const formatted = response.data.map((job) => ({
           id: job.id,
           company: job.company,
@@ -70,7 +82,13 @@ export default function App() {
           communications: mapLogsToCommunications(job.logs),
         }));
         setApps(formatted);
+        // #region agent log
+        fetch('http://127.0.0.1:7242/ingest/d922bb2f-772d-476b-9c3a-9815e2d08fee',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'App.jsx:72',message:'setApps done',data:{appsCount:formatted.length},timestamp:Date.now(),sessionId:'debug-session',runId:'pre-fix',hypothesisId:'H1'})}).catch(()=>{});
+        // #endregion
       } catch (err) {
+        // #region agent log
+        fetch('http://127.0.0.1:7242/ingest/d922bb2f-772d-476b-9c3a-9815e2d08fee',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'App.jsx:74',message:'loadJobs error',data:{message:err?.message},timestamp:Date.now(),sessionId:'debug-session',runId:'pre-fix',hypothesisId:'H1'})}).catch(()=>{});
+        // #endregion
         console.error("API fetch failed. Is the backend running?", err);
       }
     };
@@ -131,60 +149,15 @@ export default function App() {
 
     try {
       const payload = {};
-      if (patch.status) payload.status = STATUS_TO_API[patch.status];
+      if (patch.status) payload.status = STATUS_TO_API[patch.status] || patch.status;
+      if (patch.followUpDate !== undefined) payload.follow_up_date = patch.followUpDate || null;
       if (patch.notes !== undefined) payload.notes = patch.notes;
-      if (patch.followUpDate !== undefined)
-        payload.follow_up_date = patch.followUpDate || null;
 
       if (Object.keys(payload).length > 0) {
-        await axios.patch(`${API_BASE}/jobs/${id}/`, payload);
+        await axios.patch(`http://127.0.0.1:8000/api/jobs/${id}/`, payload);
       }
     } catch (err) {
       console.error("Failed to sync update with backend:", err);
-    }
-  }
-
-  async function deleteApp(id) {
-    try {
-      await axios.delete(`${API_BASE}/jobs/${id}/`);
-      setApps((prev) => prev.filter((a) => a.id !== id));
-      if (selectedId === id) setSelectedId(null);
-      setPage("list");
-    } catch (err) {
-      console.error("Failed to delete job:", err);
-    }
-  }
-
-  async function addCommunication(jobId, entry) {
-    const note = (entry?.note || "").trim();
-    if (!note) return;
-
-    const timestamp = entry?.timestamp || new Date().toISOString();
-
-    try {
-      const resp = await axios.post(`${API_BASE}/jobs/${jobId}/logs/`, {
-        note,
-        timestamp,
-      });
-
-      const newLog = {
-        id: resp.data.id,
-        note: resp.data.note,
-        timestamp: resp.data.timestamp || resp.data.created_at,
-        created_at: resp.data.created_at,
-      };
-
-      setApps((prev) =>
-        prev.map((a) => {
-          if (a.id !== jobId) return a;
-          return {
-            ...a,
-            communications: [newLog, ...(a.communications || [])],
-          };
-        })
-      );
-    } catch (err) {
-      console.error("Failed to add log:", err);
     }
   }
 
@@ -210,10 +183,12 @@ export default function App() {
             <JobDetailPage
               job={selected}
               statuses={DEFAULT_STATUSES}
-              onUpdate={(patch) => updateApp(selected.id, patch)}
-              onDelete={() => deleteApp(selected.id)}
-              onAddLog={(entry) => addCommunication(selected.id, entry)}
-              onOpenTailored={() => setPage("tailored")}
+              selectedId={selectedId}
+              onSelect={openJobPage}
+              onOpenJob={openJobPage}
+              onChangeView={() => setView("kanban")}
+              onChangeViewValue={(next) => setView(next)}
+              view={view}
             />
           )}
 
@@ -229,15 +204,14 @@ export default function App() {
                 </button>
               </div>
 
-              <ApplicationList
+              <ListView
                 apps={apps}
                 statuses={DEFAULT_STATUSES}
                 selectedId={selectedId}
-                onSelect={setSelectedId}
-                onDelete={deleteApp}
-                onUpdate={updateApp}
-                onAddCommunication={addCommunication}
-                onOpenJob={openJobPage}
+                onSelect={openJobPage}
+                onChangeView={() => setView("kanban")}
+                onChangeViewValue={(next) => setView(next)}
+                view={view}
               />
             </div>
           )}
@@ -277,6 +251,16 @@ export default function App() {
           )}
 
           {page === "master" && <MasterResume onBack={() => setPage("list")} />}
+
+          {page === "job" && (
+            <JobDetailPage
+              job={selected}
+              statuses={DEFAULT_STATUSES}
+              onBack={() => setPage("list")}
+              onUpdate={(patch) => updateApp(selected?.id, patch)}
+              onOpenResume={() => setPage("tailored")}
+            />
+          )}
 
           {page === "tailored" && (
             <TailoredResumeEditor job={selected} onBack={() => setPage("job")} />
