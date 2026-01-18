@@ -56,7 +56,12 @@ export const get_tailored_resume = async (clientJobId) => {
   });
   return {
     status: res.status,
-    data: { content: res.data.content, exists: res.data.exists },
+    data: {
+      content: res.data.content,
+      exists: res.data.exists,
+      updated_at: res.data.updated_at,
+      created_at: res.data.created_at,
+    },
   };
 };
 

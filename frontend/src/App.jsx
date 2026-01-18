@@ -7,8 +7,7 @@ import ApplicationForm from "./components/ApplicationForm.jsx";
 import KanbanDashboard from "./components/KanbanDashboard";
 import MasterResume from "./components/master_resume.jsx";
 import TailoredResumeEditor from "./components/TailoredResumeEditor.jsx";
-import CommunicationLog from "./components/CommunicationLog.jsx";
-
+import JobDetailPage from "./components/JobDetailPage.jsx";
 import { clone_tailored_resume, update_tailored_resume } from "./components/api/api";
 
 const API_BASE = "http://127.0.0.1:8000/api";
@@ -149,60 +148,15 @@ export default function App() {
 
     try {
       const payload = {};
-      if (patch.status) payload.status = STATUS_TO_API[patch.status];
+      if (patch.status) payload.status = STATUS_TO_API[patch.status] || patch.status;
+      if (patch.followUpDate !== undefined) payload.follow_up_date = patch.followUpDate || null;
       if (patch.notes !== undefined) payload.notes = patch.notes;
-      if (patch.followUpDate !== undefined)
-        payload.follow_up_date = patch.followUpDate || null;
 
       if (Object.keys(payload).length > 0) {
-        await axios.patch(`${API_BASE}/jobs/${id}/`, payload);
+        await axios.patch(`http://127.0.0.1:8000/api/jobs/${id}/`, payload);
       }
     } catch (err) {
       console.error("Failed to sync update with backend:", err);
-    }
-  }
-
-  async function deleteApp(id) {
-    try {
-      await axios.delete(`${API_BASE}/jobs/${id}/`);
-      setApps((prev) => prev.filter((a) => a.id !== id));
-      if (selectedId === id) setSelectedId(null);
-      setPage("list");
-    } catch (err) {
-      console.error("Failed to delete job:", err);
-    }
-  }
-
-  async function addCommunication(jobId, entry) {
-    const note = (entry?.note || "").trim();
-    if (!note) return;
-
-    const timestamp = entry?.timestamp || new Date().toISOString();
-
-    try {
-      const resp = await axios.post(`${API_BASE}/jobs/${jobId}/logs/`, {
-        note,
-        timestamp,
-      });
-
-      const newLog = {
-        id: resp.data.id,
-        note: resp.data.note,
-        timestamp: resp.data.timestamp || resp.data.created_at,
-        created_at: resp.data.created_at,
-      };
-
-      setApps((prev) =>
-        prev.map((a) => {
-          if (a.id !== jobId) return a;
-          return {
-            ...a,
-            communications: [newLog, ...(a.communications || [])],
-          };
-        })
-      );
-    } catch (err) {
-      console.error("Failed to add log:", err);
     }
   }
 
@@ -228,10 +182,12 @@ export default function App() {
             <JobDetailPage
               job={selected}
               statuses={DEFAULT_STATUSES}
-              onUpdate={(patch) => updateApp(selected.id, patch)}
-              onDelete={() => deleteApp(selected.id)}
-              onAddLog={(entry) => addCommunication(selected.id, entry)}
-              onOpenTailored={() => setPage("tailored")}
+              selectedId={selectedId}
+              onSelect={openJobPage}
+              onOpenJob={openJobPage}
+              onChangeView={() => setView("kanban")}
+              onChangeViewValue={(next) => setView(next)}
+              view={view}
             />
           )}
 
@@ -294,6 +250,16 @@ export default function App() {
           )}
 
           {page === "master" && <MasterResume onBack={() => setPage("list")} />}
+
+          {page === "job" && (
+            <JobDetailPage
+              job={selected}
+              statuses={DEFAULT_STATUSES}
+              onBack={() => setPage("list")}
+              onUpdate={(patch) => updateApp(selected?.id, patch)}
+              onOpenResume={() => setPage("tailored")}
+            />
+          )}
 
           {page === "tailored" && (
             <TailoredResumeEditor job={selected} onBack={() => setPage("job")} />
