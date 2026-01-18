@@ -41,19 +41,6 @@ class JobApplication(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='APPLIED')
     updated_at = models.DateTimeField(auto_now=True)
 
-    @property
-    def is_stale(self) -> bool:
-        """True if job hasn't been updated in > 7 days."""
-        if not self.updated_at:
-            return False
-        return timezone.now() - self.updated_at > timedelta(days=7)
-    
-    def touch(self):
-        """Bump the last-updated timestamp without changing other fields."""
-        self.updated_at = timezone.now()
-        self.save(update_fields=['updated_at'])
-
-
     def __str__(self):
         return f"{self.company} - {self.role}"
 
