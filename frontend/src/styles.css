@@ -327,6 +327,82 @@
     width: 100%;
   }
 
+  .jobPage {
+    display: grid;
+    gap: 18px;
+  }
+  .jobPageHeader {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .jobTitle h1 {
+    margin: 0;
+    font-size: 24px;
+  }
+  .jobMetaRow {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px;
+  }
+  .jobMetaItem {
+    display: grid;
+    gap: 6px;
+  }
+  .jobMetaItem span {
+    font-weight: 600;
+    color: #656D3F;
+  }
+  .jobSection {
+    border: 1px solid #656D3F;
+    background: #ECECEC;
+    border-radius: 16px;
+    padding: 16px;
+  }
+  .jobSectionHeader {
+    margin-bottom: 12px;
+  }
+  .jobSectionHeader h2 {
+    margin: 0 0 6px;
+    font-size: 18px;
+  }
+  .jobSectionGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px 18px;
+  }
+  .jobNotes {
+    grid-column: 1 / -1;
+  }
+  .jobLabel {
+    font-weight: 600;
+    color: #656D3F;
+    margin-bottom: 4px;
+  }
+  .jobValue {
+    color: #492828;
+  }
+  .jobActions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+  }
+  .jobMetaLine {
+    margin-top: 8px;
+  }
+  .jobTimeline {
+    display: grid;
+    gap: 10px;
+  }
+  .jobTimelineItem {
+    border-bottom: 1px solid #656D3F;
+    padding-bottom: 10px;
+  }
+  .jobTimelineDate {
+    font-weight: 600;
+  }
+
   .kanban {
     width: 100%;
   }

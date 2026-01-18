@@ -14,6 +14,7 @@ export default function ListView({
   statuses,
   selectedId,
   onSelect,
+  onOpenJob,
   onChangeView,
   onChangeViewValue,
   view,
@@ -118,7 +119,16 @@ export default function ListView({
                 </div>
               </div>
               <div className="jobCardFooter">
-                <button className="primary" type="button">View Details</button>
+                <button
+                  className="primary"
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onOpenJob?.(app.id);
+                  }}
+                >
+                  View Details
+                </button>
               </div>
             </article>
           ))}

@@ -6,6 +6,7 @@ import ApplicationForm from "./components/ApplicationForm.jsx";
 import KanbanDashboard from "./components/KanbanDashboard";
 import MasterResume from "./components/master_resume.jsx";
 import TailoredResumeEditor from "./components/TailoredResumeEditor.jsx";
+import JobDetailPage from "./components/JobDetailPage.jsx";
 import { clone_tailored_resume, update_tailored_resume } from "./components/api/api";
 
 const DEFAULT_STATUSES = ["Applied", "Interview", "Offer", "Rejection"];
@@ -104,17 +105,25 @@ export default function App() {
   );
 
   async function updateApp(id, patch) {
-    setApps(apps.map((a) => (a.id === id ? { ...a, ...patch } : a)));
+    setApps((prev) => prev.map((a) => (a.id === id ? { ...a, ...patch } : a)));
 
-    if (patch.status) {
-      try {
-        await axios.patch(`http://127.0.0.1:8000/api/jobs/${id}/`, {
-          status: STATUS_TO_API[patch.status] || patch.status,
-        });
-      } catch (err) {
-        console.error("Failed to sync status with backend:", err);
+    try {
+      const payload = {};
+      if (patch.status) payload.status = STATUS_TO_API[patch.status] || patch.status;
+      if (patch.followUpDate !== undefined) payload.follow_up_date = patch.followUpDate || null;
+      if (patch.notes !== undefined) payload.notes = patch.notes;
+
+      if (Object.keys(payload).length > 0) {
+        await axios.patch(`http://127.0.0.1:8000/api/jobs/${id}/`, payload);
       }
+    } catch (err) {
+      console.error("Failed to sync update with backend:", err);
     }
+  }
+
+  function openJobPage(id) {
+    setSelectedId(id);
+    setPage("job");
   }
 
   return (
@@ -132,7 +141,8 @@ export default function App() {
               apps={apps}
               statuses={DEFAULT_STATUSES}
               selectedId={selectedId}
-              onSelect={setSelectedId}
+              onSelect={openJobPage}
+              onOpenJob={openJobPage}
               onChangeView={() => setView("kanban")}
               onChangeViewValue={(next) => setView(next)}
               view={view}
@@ -180,6 +190,16 @@ export default function App() {
 
           {page === "master" && (
             <MasterResume onBack={() => setPage("list")} />
+          )}
+
+          {page === "job" && (
+            <JobDetailPage
+              job={selected}
+              statuses={DEFAULT_STATUSES}
+              onBack={() => setPage("list")}
+              onUpdate={(patch) => updateApp(selected?.id, patch)}
+              onOpenResume={() => setPage("tailored")}
+            />
           )}
 
           {page === "tailored" && (
