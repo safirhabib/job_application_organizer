@@ -1,126 +1,234 @@
 import React, { useMemo, useState } from "react";
 import CommunicationLog from "./CommunicationLog";
 
+function formatDateTimeLocal(iso) {
+  if (!iso) return "";
+  const d = new Date(iso);
+  const pad = (n) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(
+    d.getHours()
+  )}:${pad(d.getMinutes())}`;
+}
+
 export default function ApplicationList({
-  apps, statuses, selectedId, onSelect, onDelete, onUpdate, onAddCommunication
+  job,
+  statuses,
+  onBack,
+  onUpdate,
+  onDelete,
+  onAddCommunication,
+  onEditResume,
+  onCloneFromMaster,
 }) {
-  const [q, setQ] = useState("");
-  const [filter, setFilter] = useState("All");
+  const [newNote, setNewNote] = useState("");
+  const [newTs, setNewTs] = useState(() => formatDateTimeLocal(new Date().toISOString()));
 
-  const filtered = useMemo(() => {
-    const qq = q.trim().toLowerCase();
-    return apps.filter(a => {
-      const matchesQ =
-        !qq ||
-        a.company.toLowerCase().includes(qq) ||
-        a.position.toLowerCase().includes(qq);
-      const matchesStatus = filter === "All" || a.status === filter;
-      return matchesQ && matchesStatus;
-    });
-  }, [apps, q, filter]);
+  const title = useMemo(() => {
+    if (!job) return "";
+    return `${job.company} — ${job.position}`;
+  }, [job]);
 
-  const selected = useMemo(() => apps.find(a => a.id === selectedId) ?? null, [apps, selectedId]);
+  const logs = useMemo(() => {
+    const arr = job?.communications || [];
+    // 按 timestamp 倒序
+    return [...arr].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+  }, [job]);
+
+  if (!job) {
+    return (
+      <div className="empty">
+        <h3>No job selected</h3>
+        <p className="muted">Please select a job from the dashboard or Kanban board.</p>
+      </div>
+    );
+  }
+
+
+  const nextStatus = (() => {
+    const idx = statuses.indexOf(job.status);
+    if (idx < 0) return null;
+    return statuses[idx + 1] || null;
+  })();
+
+  async function submitLog() {
+    const note = newNote.trim();
+    if (!note) return;
+
+    const iso = newTs ? new Date(newTs).toISOString() : new Date().toISOString();
+
+    await onAddCommunication(job.id, { note, timestamp: iso });
+    setNewNote("");
+    setNewTs(formatDateTimeLocal(new Date().toISOString()));
+  }
 
   return (
-    <div className="split">
-      <div className="left">
-        <div className="toolbar">
-          <input
-            className="search"
-            placeholder="Search company or position..."
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
-          />
-          <select value={filter} onChange={(e) => setFilter(e.target.value)}>
-            <option value="All">All statuses</option>
-            {statuses.map(s => <option key={s} value={s}>{s}</option>)}
-          </select>
-        </div>
-
-        <ul className="list">
-          {filtered.map(a => (
-            <li
-              key={a.id}
-              className={a.id === selectedId ? "item selected" : "item"}
-              onClick={() => onSelect(a.id)}
-            >
-              <div className="itemTop">
-                <strong>{a.company}</strong>
-                <span className={"badge " + badgeClass(a.status)}>{a.status}</span>
-              </div>
-              <div className="muted">{a.position}</div>
-              <div className="meta">
-                <span>Applied: {a.dateApplied}</span>
-                {a.followUpDate ? <span>Follow-up: {a.followUpDate}</span> : null}
-              </div>
-            </li>
-          ))}
-          {filtered.length === 0 && <li className="muted">No applications yet.</li>}
-        </ul>
+    <div style={{ display: "grid", gap: 14 }}>
+      <div>
+        <button className="ghost" onClick={onBack}>← Back to Dashboard</button>
       </div>
 
-      <div className="right">
-        {!selected ? (
-          <div className="empty">
-            <h3>Select an application</h3>
-            <p className="muted">View/edit status, notes, tailored resume, and communication logs.</p>
-          </div>
-        ) : (
-          <div>
-            <div className="detailHeader">
-              <div>
-                <h2>{selected.company}</h2>
-                <p className="muted">{selected.position}</p>
-              </div>
-              <button className="danger" onClick={() => onDelete(selected.id)}>Delete</button>
-            </div>
+      <div className="detailHeader">
+        <div>
+          <h1 style={{ margin: 0 }}>{title}</h1>
+        </div>
+        <button className="danger" onClick={() => onDelete(job.id)}>Delete</button>
+      </div>
 
-            <div className="row">
-              <label className="field">
-                Status
-                <select
-                  value={selected.status}
-                  onChange={(e) => onUpdate(selected.id, { status: e.target.value })}
-                >
-                  {statuses.map(s => <option key={s} value={s}>{s}</option>)}
-                </select>
-              </label>
+      <div className="row">
+        <label className="field">
+          Status
+          <select
+            value={job.status}
+            onChange={(e) => onUpdate(job.id, { status: e.target.value })}
+          >
+            {statuses.map((s) => (
+              <option key={s} value={s}>{s}</option>
+            ))}
+          </select>
+        </label>
 
-              <label className="field">
-                Follow-up date
-                <input
-                  type="date"
-                  value={selected.followUpDate || ""}
-                  onChange={(e) => onUpdate(selected.id, { followUpDate: e.target.value })}
-                />
-              </label>
-            </div>
+        <label className="field">
+          Applied
+          <input
+            type="date"
+            value={job.dateApplied || ""}
+            onChange={(e) => onUpdate(job.id, { dateApplied: e.target.value })}
+          />
+        </label>
 
-            <label className="field">
-              Notes
-              <textarea
-                rows={5}
-                value={selected.notes || ""}
-                onChange={(e) => onUpdate(selected.id, { notes: e.target.value })}
-              />
-            </label>
+        <label className="field">
+          Follow-up
+          <input
+            type="date"
+            value={job.followUpDate || ""}
+            onChange={(e) => onUpdate(job.id, { followUpDate: e.target.value })}
+          />
+        </label>
+      </div>
 
-            <CommunicationLog
-              communications={selected.communications || []}
-              onAdd={(entry) => onAddCommunication(selected.id, entry)}
+      {/* Overview */}
+      <div className="section">
+        <div className="sectionHeader">
+          <h2 style={{ margin: 0 }}>📌 Overview</h2>
+        </div>
+
+        <div style={{ display: "grid", gap: 10 }}>
+          <label className="field">
+            Company
+            <input
+              value={job.company || ""}
+              onChange={(e) => onUpdate(job.id, { company: e.target.value })}
+              disabled
             />
+          </label>
+
+          <label className="field">
+            Role
+            <input
+              value={job.position || ""}
+              onChange={(e) => onUpdate(job.id, { position: e.target.value })}
+            />
+          </label>
+
+          <label className="field">
+            Job Link
+            <input
+              value={job.postingUrl || ""}
+              onChange={(e) => onUpdate(job.id, { postingUrl: e.target.value })}
+              placeholder="https://..."
+            />
+          </label>
+
+          {job.postingUrl ? (
+            <div>
+              <a href={job.postingUrl} target="_blank" rel="noreferrer">
+                🔗 View Posting
+              </a>
+            </div>
+          ) : null}
+
+          <label className="field">
+            Notes
+            <textarea
+              rows={4}
+              value={job.notes || ""}
+              onChange={(e) => onUpdate(job.id, { notes: e.target.value })}
+            />
+          </label>
+        </div>
+      </div>
+
+      {/* Resume */}
+      <div className="section">
+        <div className="sectionHeader">
+          <h2 style={{ margin: 0 }}>📄 Resume for this Job</h2>
+        </div>
+        <div className="actions">
+          <button className="ghost" onClick={onEditResume}>Edit Resume</button>
+          <button className="ghost" onClick={onCloneFromMaster}>Clone from Master</button>
+        </div>
+        <p className="muted" style={{ marginTop: 8 }}>
+          （如果你想加 “View Resume” 按钮：通常是打开后端提供的 PDF/Preview endpoint。你们现在 master 有 pdf endpoint，tailored 也可以按同样方式加。）
+        </p>
+      </div>
+
+      {/* Communication Log */}
+      <div className="section">
+        <div className="sectionHeader">
+          <h2 style={{ margin: 0 }}>💬 Communication Log</h2>
+        </div>
+
+        <div style={{ display: "grid", gap: 10 }}>
+          <label className="field">
+            Note
+            <textarea
+              rows={3}
+              value={newNote}
+              onChange={(e) => setNewNote(e.target.value)}
+              placeholder="例如：Jan 18 — Interview invite received (Email)"
+            />
+          </label>
+
+          <label className="field">
+            Timestamp
+            <input
+              type="datetime-local"
+              value={newTs}
+              onChange={(e) => setNewTs(e.target.value)}
+            />
+          </label>
+
+          <div className="actions">
+            <button className="primary" onClick={submitLog}>+ Add Entry</button>
           </div>
-        )}
+        </div>
+
+        {/* 你已有的组件：如果你想继续用它展示列表 */}
+        <div style={{ marginTop: 10 }}>
+          <CommunicationLog
+            communications={logs}
+            onAdd={() => {}}
+          />
+        </div>
+      </div>
+
+      {/* Actions */}
+      <div className="section">
+        <div className="sectionHeader">
+          <h2 style={{ margin: 0 }}>📱 Actions</h2>
+        </div>
+        <div className="actions">
+          <button
+            className="primary"
+            disabled={!nextStatus}
+            onClick={() => nextStatus && onUpdate(job.id, { status: nextStatus })}
+          >
+            Move to Next Stage
+          </button>
+          <button className="ghost" onClick={onBack}>Archive (UI only)</button>
+          <button className="danger" onClick={() => onDelete(job.id)}>Delete</button>
+        </div>
       </div>
     </div>
   );
-}
-
-function badgeClass(status) {
-  switch (status) {
-    case "Interview": return "b2";
-    case "Offer": return "b3";
-    case "Rejection": return "b4";
-    default: return "b1";
-  }
 }

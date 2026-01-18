@@ -19,6 +19,9 @@ export default function ListView({
   onChangeViewValue,
   view,
 }) {
+  // #region agent log
+  fetch('http://127.0.0.1:7242/ingest/d922bb2f-772d-476b-9c3a-9815e2d08fee',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'ListView.jsx:15',message:'render',data:{appsCount:apps?.length,view},timestamp:Date.now(),sessionId:'debug-session',runId:'pre-fix',hypothesisId:'H2'})}).catch(()=>{});
+  // #endregion
   const [sortKey, setSortKey] = useState("date_desc");
 
   const statusOrder = useMemo(() => {
@@ -43,12 +46,14 @@ export default function ListView({
     return sorted;
   }, [apps, sortKey, statusOrder]);
 
+  // #region agent log
+  fetch('http://127.0.0.1:7242/ingest/d922bb2f-772d-476b-9c3a-9815e2d08fee',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'ListView.jsx:41',message:'sortedApps computed',data:{sortKey,count:sortedApps.length},timestamp:Date.now(),sessionId:'debug-session',runId:'pre-fix',hypothesisId:'H3'})}).catch(()=>{});
+  // #endregion
+
   return (
     <section className="listView">
       <div className="listViewHeader">
         <div>
-          <h2>My Applications</h2>
-          <p className="muted">Track applications and review details at a glance.</p>
         </div>
         <div className="listViewActions">
           <label className="sortControl">

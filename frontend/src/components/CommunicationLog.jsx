@@ -1,58 +1,77 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 
-export default function CommunicationLog({ communications, onAdd }) {
-  const today = new Date().toISOString().slice(0, 10);
-  const [entry, setEntry] = useState({ date: today, type: "Email", summary: "" });
+function formatTs(ts) {
+  if (!ts) return "";
+  const d = new Date(ts);
+  if (Number.isNaN(d.getTime())) return String(ts);
+  return d.toLocaleString();
+}
 
-  function set(k, v) { setEntry(p => ({ ...p, [k]: v })); }
+export default function CommunicationLog({ communications = [], onAdd }) {
+  const [note, setNote] = useState("");
+  const [timestamp, setTimestamp] = useState(""); // datetime-local: "2026-01-18T10:00"
+
+  const sorted = useMemo(() => {
+    const arr = [...communications];
+    arr.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+    return arr;
+  }, [communications]);
 
   function submit(e) {
     e.preventDefault();
-    if (!entry.summary.trim()) return;
-    onAdd(entry);
-    setEntry({ date: today, type: "Email", summary: "" });
+    const n = note.trim();
+    if (!n) return;
+
+    onAdd?.({
+      note: n,
+      // 如果用户不填时间，就让 App.jsx 用当前时间兜底也行；这里也给一个兜底
+      timestamp: timestamp || new Date().toISOString(),
+    });
+
+    setNote("");
+    setTimestamp("");
   }
 
   return (
-    <section className="section">
-      <h3>Response & Communication Log</h3>
+    <section style={{ marginTop: 10 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+        <h3 style={{ margin: 0 }}>💬 Communication Log</h3>
+      </div>
 
-      <form className="row" onSubmit={submit}>
-        <label className="field">
-          Date
-          <input type="date" value={entry.date} onChange={(e) => set("date", e.target.value)} />
-        </label>
-        <label className="field">
-          Type
-          <select value={entry.type} onChange={(e) => set("type", e.target.value)}>
-            <option>Email</option>
-            <option>Phone</option>
-            <option>LinkedIn</option>
-            <option>Interview</option>
-            <option>Offer</option>
-            <option>Rejection</option>
-            <option>Other</option>
-          </select>
-        </label>
-        <label className="field grow">
-          Summary
-          <input value={entry.summary} onChange={(e) => set("summary", e.target.value)} placeholder="e.g., recruiter replied; scheduled interview" />
-        </label>
-        <button className="primary" type="submit">Add</button>
+      <form onSubmit={submit} style={{ marginTop: 10, display: "grid", gap: 8 }}>
+        <textarea
+          rows={3}
+          value={note}
+          onChange={(e) => setNote(e.target.value)}
+          placeholder='e.g., Interview invite received (Email)'
+          style={{ width: "100%", padding: 10, borderRadius: 10 }}
+        />
+
+        <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
+          <label style={{ display: "grid", gap: 4 }}>
+            <span style={{ fontSize: 12, opacity: 0.75 }}>Timestamp (optional)</span>
+            <input
+              type="datetime-local"
+              value={timestamp}
+              onChange={(e) => setTimestamp(e.target.value)}
+              style={{ padding: 10, borderRadius: 10 }}
+            />
+          </label>
+
+          <button className="primary" type="submit" style={{ height: 40 }}>
+            Add Entry
+          </button>
+        </div>
       </form>
 
-      <div className="log">
-        {communications.length === 0 ? (
-          <p className="muted">No communications logged yet.</p>
+      <div style={{ marginTop: 12 }}>
+        {sorted.length === 0 ? (
+          <p className="muted">No logs yet.</p>
         ) : (
-          <ul className="logList">
-            {communications.map(c => (
-              <li key={c.id} className="logItem">
-                <div className="logTop">
-                  <strong>{c.type}</strong>
-                  <span className="muted">{c.date}</span>
-                </div>
-                <div>{c.summary}</div>
+          <ul style={{ margin: 0, paddingLeft: 18 }}>
+            {sorted.map((c) => (
+              <li key={c.id || `${c.timestamp}-${c.note}`} style={{ marginBottom: 8 }}>
+                <b>{formatTs(c.timestamp)} —</b> {c.note}
               </li>
             ))}
           </ul>
