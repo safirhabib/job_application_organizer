@@ -11,6 +11,7 @@ const MasterResume = ({ onBack }) => {
 
   const [pages, setPages] = useState(0);
   const [loadingPages, setLoadingPages] = useState({});
+  const [pageErrors, setPageErrors] = useState({});
 
   const [status, setStatus] = useState("Loading...");
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
@@ -25,7 +26,6 @@ const MasterResume = ({ onBack }) => {
         const res = await get_master_resume();
         if (res.status === 200) {
           setMasterResume(res.data.latex_source ?? "");
-          setStatus("Loaded");
         } else {
           setStatus("Failed to load");
         }
@@ -52,10 +52,18 @@ const MasterResume = ({ onBack }) => {
         const next = {};
         for (let i = 1; i <= n; i++) next[i] = true;
         setLoadingPages(next);
+
+        const errs = {};
+        for (let i = 1; i <= n; i++) errs[i] = false;
+        setPageErrors(errs);
+
       } catch (e) {
         console.error(e);
         setPages(1);
         setLoadingPages({ 1: true });
+        setPages(1);
+        setLoadingPages({ 1: true });
+        setPageErrors({ 1: false });
       }
     };
 
@@ -139,13 +147,14 @@ const MasterResume = ({ onBack }) => {
     <div className="flex flex-col items-center w-full">
       <div className="flex flex-col gap-2 w-[90%]">
         <div className="w-full flex items-center justify-between">
-          <div className="text-sm text-gray-300">Status: {status}</div>
+
+            <div className={`text-sm ${status === "Loading..." ? "text-gray-800" : status === "Loaded" ? "text-green-800" : "text-red-800"}`}>Status: {status}</div>
 
           <div className="flex gap-2">
             {onBack && (
               <button
                 onClick={onBack}
-                className="bg-transparent border border-gray-400 text-gray-200 rounded px-4 py-2 hover:bg-white/10 transition"
+                className="border border-oliveBorder bg-softGray text-darkMaroon"
               >
                 Back
               </button>
@@ -177,6 +186,8 @@ const MasterResume = ({ onBack }) => {
                 Array.from({ length: pages }, (_, idx) => {
                   const page = idx + 1;
                   const isLoading = loadingPages[page] !== false;
+                  const isError = pageErrors[page] === true;
+
 
                   return (
                     <div key={page} className="w-full bg-white rounded-lg relative">
@@ -186,16 +197,35 @@ const MasterResume = ({ onBack }) => {
                         </div>
                       )}
 
+                      {!isError ? (
                       <img
-                        key={`${saveCount}-${page}`}
-                        src={`${backend}/api/get_master_preview?page=${page}&ts=${saveCount}`}
-                        className={`w-full rounded-lg ${isLoading ? "opacity-30" : ""}`}
-                        onLoad={() => setLoadingPages((p) => ({ ...p, [page]: false }))}
-                        onError={() => setLoadingPages((p) => ({ ...p, [page]: false }))}
-                        alt={`Resume preview page ${page}`}
+                          key={`${saveCount}-${page}`}
+                          src={`${backend}/api/get_master_preview?page=${page}&ts=${saveCount}`}
+                          className={`w-full rounded-lg ${isLoading ? "opacity-30" : ""}`}
+                          onLoad={() => {
+                          setLoadingPages((p) => ({ ...p, [page]: false }));
+                          setPageErrors((e) => ({ ...e, [page]: false }));
+                          setStatus("Loaded");
+                          }}
+                          onError={() => {
+                          setLoadingPages((p) => ({ ...p, [page]: false }));
+                          setPageErrors((e) => ({ ...e, [page]: true }));
+                          setStatus("Load failed");
+                          }}
+                          alt={`Resume preview page ${page}`}
                       />
+                      ) : (
+                      <div className="w-full bg-white rounded-lg px-6 py-4">
+                          <div className="text-lg font-medium text-[#492828]">
+                          Resume preview page {page}
+                          </div>
+                          <div className="text-sm text-gray-500">Page {page}</div>
+                      </div>
+                      )}
 
-                      <div className="text-xs text-gray-500 px-2 py-1">Page {page}</div>
+                      {!isError && (
+                        <div className="text-xs text-gray-500 px-2 py-1">Page {page}</div>
+                      )}
                     </div>
                   );
                 })

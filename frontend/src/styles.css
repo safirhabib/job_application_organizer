@@ -88,12 +88,9 @@
   .badge.b4 { background: #ECECEC; }
   
   button {
-    border: 1px solid #656D3F;
-    background: #ECECEC;
     padding: 10px 12px;
     border-radius: 12px;
     cursor: pointer;
-    color: #492828;
   }
   button.primary { background: #84934A; color: #ECECEC; border-color: #84934A; }
   button.danger { background: #492828; color: #ECECEC; border-color: #492828; }
