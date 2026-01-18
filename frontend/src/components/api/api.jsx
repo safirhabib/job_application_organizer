@@ -29,6 +29,22 @@ export const update_master_resume = async (latex_source) => {
   };
 };
 
+export const get_master_resume_image = async (latex_source) => {
+  let res = await axios.get(
+    `${backend}/api/get_master_preview`,
+    { latex_source },
+    { withCredentials: true }
+  );
+
+  res = res ? res.status : 404;
+
+  return {
+    status: res,
+    data: { content: res.data.latex_preview },
+  };
+
+}
+
 export const get_tailored_resume = async (clientJobId) => {
   const res = await axios.get(`${backend}/api/tailored/${clientJobId}/`, {
     withCredentials: true,
