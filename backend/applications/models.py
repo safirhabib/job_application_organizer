@@ -36,9 +36,14 @@ class JobApplication(models.Model):
     ]
     # For Umran's US1
     company = models.CharField(max_length=255)
+    company_email = models.EmailField(blank=True, default="")
     role = models.CharField(max_length=255)
     date_applied = models.DateField()
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='APPLIED')
+    notes = models.TextField(blank=True, default="")
+    follow_up_date = models.DateField(null=True, blank=True)
+    posting_url = models.URLField(blank=True, default="")
+    image_url = models.URLField(blank=True, default="")
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):

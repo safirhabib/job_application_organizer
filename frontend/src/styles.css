@@ -1,21 +1,52 @@
 :root {
-    font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-    color: #111;
-    background: #f6f7fb;
-  }
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  color: #492828;
+  background: #ECECEC;
+}
   
   * { box-sizing: border-box; }
-  body { margin: 0; }
+  html, body, #root {
+    margin: 0;
+    min-height: 100vh;
+    background: #ECECEC !important;
+  }
   
-  .app { max-width: 1100px; margin: 0 auto; padding: 18px; }
+  .app {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0;
+    min-height: 100vh;
+    background: #ECECEC;
+  }
+  .navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 18px;
+    background: #492828;
+    border: 1px solid #656D3F;
+  }
+  .logo { font-weight: 700; font-size: 18px; cursor: pointer; color: #ECECEC; }
+  .navActions { display: flex; gap: 10px; align-items: center; }
   .header { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
-  .muted { color: #606770; }
+  .muted { color: #656D3F; }
   
   .tabs { display: flex; gap: 8px; margin: 14px 0; flex-wrap: wrap; }
   .tab { border: 1px solid #e2e4ea; background: white; padding: 10px 12px; border-radius: 12px; cursor: pointer; }
   .tab.active { border-color: #b7c0ff; box-shadow: 0 6px 18px rgba(0,0,0,0.06); }
   
-  .grid .panel { background: white; border: 1px solid #e2e4ea; border-radius: 16px; padding: 14px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+  .grid {
+    padding: 20px;
+  }
+  .grid .panel {
+    background: transparent;
+    border: none;
+    border-radius: 16px;
+    padding: 18px 0;
+    box-shadow: none;
+    min-height: 70vh;
+  }
   
   .split { display: grid; grid-template-columns: 1fr 1.4fr; gap: 14px; }
   .left, .right { min-width: 0; }
@@ -30,8 +61,10 @@
   .form { display: grid; gap: 10px; }
   label { display: grid; gap: 6px; font-weight: 600; }
   input, textarea, select {
-    border: 1px solid #d8dbe6; border-radius: 12px; padding: 10px 12px;
+    border: 1px solid #656D3F; border-radius: 12px; padding: 10px 12px;
     font-size: 14px; outline: none;
+    background: #ECECEC;
+    color: #492828;
   }
   textarea { resize: vertical; }
   
@@ -41,40 +74,243 @@
   
   .list { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
   .item {
-    border: 1px solid #e2e4ea; border-radius: 14px; padding: 10px 12px;
-    cursor: pointer; background: #fff;
+    border: 1px solid #656D3F; border-radius: 14px; padding: 10px 12px;
+    cursor: pointer; background: #ECECEC;
   }
-  .item.selected { border-color: #b7c0ff; box-shadow: 0 10px 24px rgba(0,0,0,0.06); }
+  .item.selected { border-color: #84934A; box-shadow: 0 10px 24px rgba(0,0,0,0.06); }
   .itemTop { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
   .meta { display: flex; gap: 12px; flex-wrap: wrap; font-size: 12px; color: #606770; margin-top: 6px; }
   
-  .badge { font-size: 12px; padding: 4px 10px; border-radius: 999px; border: 1px solid #e2e4ea; }
-  .badge.b1 { background: #f3f4ff; }
-  .badge.b2 { background: #fff7e6; }
-  .badge.b3 { background: #e8fff0; }
-  .badge.b4 { background: #ffecec; }
+  .badge { font-size: 12px; padding: 4px 10px; border-radius: 999px; border: 1px solid #656D3F; color: #492828; }
+  .badge.b1 { background: #ECECEC; }
+  .badge.b2 { background: #ECECEC; }
+  .badge.b3 { background: #ECECEC; }
+  .badge.b4 { background: #ECECEC; }
   
   button {
-    border: 1px solid #d8dbe6;
-    background: white;
+    border: 1px solid #656D3F;
+    background: #ECECEC;
     padding: 10px 12px;
     border-radius: 12px;
     cursor: pointer;
+    color: #492828;
   }
-  button.primary { background: #2b4cff; color: white; border-color: #2b4cff; }
-  button.danger { background: #ff3b3b; color: white; border-color: #ff3b3b; }
-  button.ghost { background: #f6f7fb; }
+  button.primary { background: #84934A; color: #ECECEC; border-color: #84934A; }
+  button.danger { background: #492828; color: #ECECEC; border-color: #492828; }
+  button.ghost { background: #ECECEC; }
   .detailHeader { display: flex; align-items: start; justify-content: space-between; gap: 12px; }
   
-  .section { margin-top: 14px; border-top: 1px solid #eef0f6; padding-top: 14px; }
+  .section { margin-top: 14px; border-top: 1px solid #656D3F; padding-top: 14px; }
   .sectionHeader { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
   .actions { display: flex; gap: 8px; flex-wrap: wrap; }
   .titleInput { font-weight: 700; }
   
   .logList { list-style: none; padding: 0; margin: 10px 0 0; display: grid; gap: 8px; }
-  .logItem { border: 1px solid #eef0f6; border-radius: 12px; padding: 10px 12px; }
+  .logItem { border: 1px solid #656D3F; border-radius: 12px; padding: 10px 12px; }
   .logTop { display: flex; justify-content: space-between; gap: 12px; }
   
-  .empty { padding: 18px; border: 1px dashed #d8dbe6; border-radius: 14px; }
-  .footer { margin-top: 14px; font-size: 12px; color: #606770; }
+  .empty { padding: 18px; border: 1px dashed #656D3F; border-radius: 14px; background: #ECECEC; }
+  .footer { margin-top: 14px; font-size: 12px; color: #656D3F; padding: 0 20px 20px; }
+
+  .formPage {
+    display: flex;
+    justify-content: center;
+    padding: 10px 0 30px;
+  }
+  .formCard {
+    width: min(520px, 100%);
+    background: #ECECEC;
+    border: 1px solid #656D3F;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 8px 20px rgba(73,40,40,0.08);
+  }
+  .formHeader h2 {
+    margin: 0 0 6px;
+    font-size: 20px;
+    color: #492828;
+  }
+  .formStack {
+    display: grid;
+    gap: 12px;
+    margin-top: 12px;
+  }
+  .formActions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 6px;
+  }
+  .radioRow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 500;
+    color: #492828;
+  }
+  .radioRow input {
+    accent-color: #84934A;
+  }
+
+  .listViewHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+  }
+  .listView h2 { margin: 0; font-size: 22px; }
+  .listView .muted { margin: 4px 0 0; }
+  .listViewActions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .sortControl {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+  }
+  .cardGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+  }
+  .jobCard {
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    gap: 12px;
+    border: 1px solid #656D3F;
+    border-radius: 14px;
+    background: #ECECEC;
+    padding: 14px;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+  }
+  .jobCard:hover,
+  .jobCard:focus {
+    transform: translateY(-2px);
+    border-color: #84934A;
+    box-shadow: 0 12px 26px rgba(73,40,40,0.12);
+    outline: none;
+  }
+  .jobCard.selected {
+    border-color: #84934A;
+    box-shadow: 0 12px 26px rgba(132,147,74,0.2);
+  }
+  .jobCardImage {
+    border-radius: 12px;
+    overflow: hidden;
+    background: #656D3F;
+    height: 110px;
+    display: grid;
+    place-items: center;
+  }
+  .jobCardImage img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: 8px;
+  }
+  .jobCardBody h3 { margin: 0 0 4px; font-size: 16px; }
+  .jobCardBody .muted { font-size: 13px; }
+  .jobCardHeader {
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  .jobMeta {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    font-size: 12px;
+    color: #656D3F;
+  }
+  .jobCardFooter {
+    display: flex;
+    justify-content: flex-start;
+  }
+  .jobCardFooter button {
+    width: 100%;
+  }
+
+  .kanban {
+    width: 100%;
+  }
+  .kanbanHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+  .kanbanTitle {
+    font-weight: 800;
+    font-size: 18px;
+    color: #492828;
+  }
+  .kanbanWrapper {
+    display: grid;
+    gap: 12px;
+  }
+  .kanbanTopBar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .kanbanTopBar h2 {
+    margin: 0;
+    font-size: 22px;
+  }
+  .kanbanActions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .kanbanBoard {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(220px, 1fr));
+    gap: 16px;
+    align-items: start;
+  }
+  @media (max-width: 1100px) {
+    .kanbanBoard {
+      grid-template-columns: repeat(2, minmax(220px, 1fr));
+    }
+  }
+  @media (max-width: 720px) {
+    .kanbanBoard {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .mobileControls {
+    display: none;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+  }
+
+  @media (max-width: 720px) {
+    .navbar {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .listViewActions {
+      display: none;
+    }
+    .mobileControls {
+      display: flex;
+    }
+    .cardGrid {
+      grid-template-columns: 1fr;
+    }
+  }
   

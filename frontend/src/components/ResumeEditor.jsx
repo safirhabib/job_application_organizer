@@ -168,7 +168,7 @@ export default function ResumeEditor({
         <section className="section">
           <div className="sectionHeader">
             <div>
-              <h3>Tailored Resume (per application)</h3>
+          <h3>Tailored Resume (per application)</h3>
               <p className="muted">
                 {selected ? `${selected.company} — ${selected.position}` : "Select an application to start."}
               </p>
