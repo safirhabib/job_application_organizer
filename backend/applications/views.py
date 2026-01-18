@@ -7,8 +7,8 @@ from django.contrib.auth.models import User
 from . import latex_converter
 
 # Importing models and serializers
-from .models import MasterResume, JobApplication, TailoredResume
-from .serializers import JobSerializer
+from .models import MasterResume, JobApplication, TailoredResume, CommLog
+from .serializers import JobSerializer, CommLogSerializer
 
 class JobCreateView(generics.ListCreateAPIView):
     queryset = JobApplication.objects.all()
@@ -109,3 +109,14 @@ def _get_or_create_demo_user(request):
 class JobDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = JobApplication.objects.all()
     serializer_class = JobSerializer
+
+class JobLogListCreateView(generics.ListCreateAPIView):
+    serializer_class = CommLogSerializer
+
+    def get_queryset(self):
+        job_id = self.kwargs["job_id"]
+        return CommLog.objects.filter(job_id=job_id).order_by("-timestamp", "-created_at")
+
+    def perform_create(self, serializer):
+        job_id = self.kwargs["job_id"]
+        serializer.save(job_id=job_id)
