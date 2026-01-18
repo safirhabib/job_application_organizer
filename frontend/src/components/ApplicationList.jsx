@@ -37,12 +37,12 @@ export default function ApplicationList({
   if (!job) {
     return (
       <div className="empty">
-        <h3>没有选中的 Job</h3>
-        <p className="muted">请先从 Dashboard / Kanban 选择一个 job。</p>
-        <button className="ghost" onClick={onBack}>Back to Dashboard</button>
+        <h3>No job selected</h3>
+        <p className="muted">Please select a job from the dashboard or Kanban board.</p>
       </div>
     );
   }
+
 
   const nextStatus = (() => {
     const idx = statuses.indexOf(job.status);
