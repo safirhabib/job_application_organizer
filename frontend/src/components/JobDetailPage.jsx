@@ -89,9 +89,26 @@ export default function JobDetailPage() {
 
   return (
     <div style={{ maxWidth: 900, margin: "0 auto", padding: 16 }}>
-      <Link to="/" style={{ display: "inline-block", marginBottom: 12 }}>
-        ← Back to Dashboard
-      </Link>
+      <div style={{ display: "flex", gap: 10, alignItems: "center", marginBottom: 12 }}>
+  <button
+    type="button"
+    onClick={() => navigate(-1)}
+    style={{
+      border: "1px solid #ccc",
+      background: "white",
+      padding: "6px 10px",
+      borderRadius: 8,
+      cursor: "pointer",
+    }}
+  >
+    ← Back
+  </button>
+
+  <Link to="/" style={{ display: "inline-block" }}>
+    ← Back to Dashboard
+  </Link>
+</div>
+
 
       <h1 style={{ margin: "8px 0 16px" }}>
         {job.company} — {job.role}
