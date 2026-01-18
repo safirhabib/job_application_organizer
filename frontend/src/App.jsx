@@ -8,7 +8,8 @@ import KanbanDashboard from "./components/KanbanDashboard";
 import MasterResume from "./components/master_resume.jsx";
 import TailoredResumeEditor from "./components/TailoredResumeEditor.jsx";
 import JobDetailPage from "./components/JobDetailPage.jsx";
-import TodoPage from "./components/TodoPage.jsx";
+import StatsOverview from "./components/StatsOverview.jsx";
+main
 import { clone_tailored_resume, update_tailored_resume } from "./components/api/api";
 
 const API_BASE = "http://127.0.0.1:8000/api";
@@ -46,20 +47,17 @@ function formatDate(ts) {
 }
 
 export default function App() {
-  //const [view, setView] = useState("kanban"); // kanban | list
+  const [view, setView] = useState("kanban"); // kanban | list
   const [page, setPage] = useState("list"); // list | add | master | tailored | job
 
-  const [theme, setTheme] = useState(() => {
-    return localStorage.getItem("jao_theme") || "light";
-  });
-  const [view, setView] = useState("list");
   const [apps, setApps] = useState([]);
   const [selectedId, setSelectedId] = useState(null);
 
   useEffect(() => {
-    document.documentElement.dataset.theme = theme;
-    localStorage.setItem("jao_theme", theme);
-  }, [theme]);
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/d922bb2f-772d-476b-9c3a-9815e2d08fee',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'App.jsx:55',message:'page/view change',data:{page,view,appsCount:apps.length},timestamp:Date.now(),sessionId:'debug-session',runId:'pre-fix',hypothesisId:'H2'})}).catch(()=>{});
+    // #endregion
+  }, [page, view, apps.length]);
 
   useEffect(() => {
     const loadJobs = async () => {
@@ -107,14 +105,14 @@ export default function App() {
     try {
       const response = await axios.post(`${API_BASE}/jobs/`, {
         company: app.company.trim(),
-        company_email: (app.company_email || "").trim(),
-        role: app.role.trim(),
-        date_applied: app.date_applied,
+        company_email: (app.companyEmail || "").trim(),
+        role: app.position.trim(),
+        date_applied: app.dateApplied,
         status: STATUS_TO_API[app.status] || "APPLIED",
         notes: app.notes ?? "",
-        follow_up_date: app.follow_up_date || null,
-        posting_url: app.posting_url?.trim() || "",
-        image_url: app.image_url?.trim() || "",
+        follow_up_date: app.followUpDate || null,
+        posting_url: app.postingUrl?.trim() || "",
+        image_url: app.imageUrl?.trim() || "",
       });
 
       const job = response.data;
@@ -164,13 +162,30 @@ export default function App() {
     }
   }
 
+  async function deleteLog(jobId, logId) {
+    if (!jobId || !logId) return;
+    setApps((prev) =>
+      prev.map((a) =>
+        a.id === jobId
+          ? { ...a, communications: (a.communications || []).filter((c) => c.id !== logId) }
+          : a
+      )
+    );
+
+    try {
+      await axios.delete(`${API_BASE}/jobs/${jobId}/logs/${logId}/`);
+    } catch (err) {
+      console.error("Failed to delete log entry:", err);
+    }
+  }
+
   function openJobPage(id) {
     setSelectedId(id);
     setPage("job");
   }
 
   return (
-    <div className={`app ${theme === "dark" ? "theme-dark" : ""}`}>
+    <div className="app">
       <Navbar
         onDashboard={() => {
           setPage("list");
@@ -178,9 +193,6 @@ export default function App() {
         }}
         onMasterResume={() => setPage("master")}
         onAdd={() => setPage("add")}
-        onTodo={() => setPage("todo")}
-        onToggleTheme={() => setTheme((t) => (t === "dark" ? "light" : "dark"))}
-        theme={theme}
       />
 
       <div className="grid">
@@ -210,6 +222,8 @@ export default function App() {
                 </button>
               </div>
 
+              <StatsOverview apps={apps} />
+
               <ListView
                 apps={apps}
                 statuses={DEFAULT_STATUSES}
@@ -233,6 +247,8 @@ export default function App() {
                   Switch to List
                 </button>
               </div>
+
+              <StatsOverview apps={apps} />
 
               <KanbanDashboard
                 apps={apps}
@@ -265,14 +281,13 @@ export default function App() {
               onBack={() => setPage("list")}
               onUpdate={(patch) => updateApp(selected?.id, patch)}
               onOpenResume={() => setPage("tailored")}
+              onDeleteLog={(logId) => deleteLog(selected?.id, logId)}
             />
           )}
 
           {page === "tailored" && (
             <TailoredResumeEditor job={selected} onBack={() => setPage("job")} />
           )}
-
-          {page === "todo" && <TodoPage />}
         </div>
       </div>
 
@@ -282,28 +297,3 @@ export default function App() {
     </div>
   );
 }
-
-// function JobDetailPage({ job, statuses, onUpdate, onDelete, onAddLog, onOpenTailored }) {
-//   const moveNext = () => {
-//     const idx = statuses.indexOf(job.status);
-//     if (idx >= 0 && idx < statuses.length - 1) {
-//       onUpdate({ status: statuses[idx + 1] });
-//     }
-//   };
-
-//   return (
-//     <div style={{ maxWidth: 860, margin: "0 auto" }}>
-//       <h1 style={{ margin: "6px 0 10px" }}>
-//         {job.company} — {job.position}
-//       </h1>
-
-//       {/* rest unchanged */}
-//       <CommunicationLog communications={job.communications || []} onAdd={onAddLog} />
-
-//       <div style={{ display: "flex", gap: 10, marginTop: 16 }}>
-//         <button onClick={moveNext}>Move to Next Stage</button>
-//         <button className="danger" onClick={onDelete}>Delete</button>
-//       </div>
-//     </div>
-//   );
-// }

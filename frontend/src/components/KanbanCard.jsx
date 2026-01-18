@@ -27,7 +27,7 @@ export default function KanbanCard({ app, onView }) {
         (ageMs / 1000).toFixed(2)
       );
 
-      if (ageMs > 3 * 1000) {
+      if (ageMs > 30 * 1000) {
         setIsStale(true);
         return true;
       }
@@ -71,6 +71,13 @@ export default function KanbanCard({ app, onView }) {
     fontWeight: 800,
     fontSize: 15,
     color: "#352222",
+  };
+
+  const headerRowStyle = {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 8,
   };
 
   const roleStyle = {
@@ -187,7 +194,12 @@ export default function KanbanCard({ app, onView }) {
       style={cardStyle}
       onMouseDown={() => {}}
     >
-      <div style={headingStyle}>{app.company}</div>
+      <div style={headerRowStyle}>
+        <div style={headingStyle}>{app.company}</div>
+        <span className={`badge kanbanStatusBadge ${badgeClass(app.status)}`}>
+          {app.status}
+        </span>
+      </div>
       {app.role && <div style={roleStyle}>{app.role}</div>}
 
       <div style={appliedStyle}>
@@ -236,4 +248,17 @@ export default function KanbanCard({ app, onView }) {
       </div>
     </div>
   );
+}
+
+function badgeClass(status) {
+  switch (status) {
+    case "Interview":
+      return "b2";
+    case "Offer":
+      return "b3";
+    case "Rejection":
+      return "b4";
+    default:
+      return "b1";
+  }
 }
