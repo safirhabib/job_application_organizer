@@ -3,9 +3,16 @@ import subprocess
 import tempfile
 from io import BytesIO
 
-def tex_to_png(latex_code: str) -> bytes:
+from wand.image import Image
+
+
+def tex_to_pdf_bytes(latex_code: str) -> bytes:
+    """
+    Compile LaTeX into a PDF and return PDF bytes.
+    """
     env = os.environ.copy()
-    env["PATH"] = env.get("PATH", "") + ":/Library/TeX/texbin:/opt/homebrew/bin"
+    env = os.environ.copy()
+    env["PATH"] = env.get("PATH", "") + ":/Library/TeX/texbin:/opt/homebrew/bin:/usr/texbin:/usr/local/bin"
     env.setdefault("MAGICK_HOME", "/opt/homebrew/opt/imagemagick")
     env.setdefault("DYLD_LIBRARY_PATH", "/opt/homebrew/opt/imagemagick/lib")
     env.setdefault("WAND_LIBRARY", "/opt/homebrew/opt/imagemagick/lib/libMagickWand-7.Q16HDRI.dylib")
@@ -17,7 +24,6 @@ def tex_to_png(latex_code: str) -> bytes:
         with open(tex_path, "w", encoding="utf-8") as f:
             f.write(latex_code)
 
-        # IMPORTANT: run inside tmpdir and pass env
         p = subprocess.run(
             ["pdflatex", "-interaction=nonstopmode", "output.tex"],
             cwd=tmpdir,
@@ -26,13 +32,42 @@ def tex_to_png(latex_code: str) -> bytes:
             stderr=subprocess.STDOUT,
             text=True,
         )
+
         if p.returncode != 0 or not os.path.exists(pdf_path):
             raise RuntimeError(f"LaTeX compile failed:\n{p.stdout}")
 
-        from wand.image import Image
-        with Image(filename=pdf_path, resolution=300) as img:
+        with open(pdf_path, "rb") as f:
+            return f.read()
+
+
+def pdf_page_count(pdf_bytes: bytes) -> int:
+    """
+    Return number of pages in a PDF given as bytes.
+    """
+    with tempfile.TemporaryDirectory() as tmpdir:
+        pdf_path = os.path.join(tmpdir, "input.pdf")
+        with open(pdf_path, "wb") as f:
+            f.write(pdf_bytes)
+
+        with Image(filename=pdf_path) as img:
+            return len(img.sequence)
+
+
+def pdf_page_to_png(pdf_bytes: bytes, page: int, resolution: int = 200) -> bytes:
+    """
+    Convert a single PDF page (1-indexed) to PNG bytes.
+    """
+    if page < 1:
+        raise ValueError("page must be >= 1")
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        pdf_path = os.path.join(tmpdir, "input.pdf")
+        with open(pdf_path, "wb") as f:
+            f.write(pdf_bytes)
+
+        page_index = page - 1  # 0-indexed for wand
+        with Image(filename=f"{pdf_path}[{page_index}]", resolution=resolution) as img:
             img.format = "png"
             buf = BytesIO()
             img.save(file=buf)
-            buf.seek(0)
-            return buf.read()
+            return buf.getvalue()
