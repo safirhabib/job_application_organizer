@@ -146,6 +146,16 @@ const MasterResume = ({ onBack }) => {
   return (
     <div className="flex flex-col items-center w-full">
       <div className="flex flex-col gap-2 w-[90%]">
+        {showSuccessMessage && (
+          <div className="bg-green-800/90 text-white px-4 py-2 rounded mb-4">{successMessage}</div>
+        )}
+
+        {showErrorMessage && (
+          <div className="bg-red-800/90 text-white px-4 py-2 rounded mb-4 whitespace-pre-wrap">
+            {errorMessage}
+          </div>
+        )}
+
         <div className="w-full flex items-center justify-between">
 
             <div className={`text-sm ${status === "Loading..." ? "text-gray-800" : status === "Loaded" ? "text-green-800" : "text-red-800"}`}>Status: {status}</div>
@@ -166,8 +176,15 @@ const MasterResume = ({ onBack }) => {
             >
               Download
             </button>
+
+            <button onClick={saveResume} className="bg-[#224378] text-white rounded py-2">
+              Save
+            </button>
+
+
           </div>
         </div>
+
 
         <div className="flex flex-row gap-8">
           <div className="w-[50%]">
@@ -185,7 +202,7 @@ const MasterResume = ({ onBack }) => {
               ) : (
                 Array.from({ length: pages }, (_, idx) => {
                   const page = idx + 1;
-                  const isLoading = loadingPages[page] !== false;
+                  const isLoading = loadingPages[page] === true;
                   const isError = pageErrors[page] === true;
 
 
@@ -203,14 +220,14 @@ const MasterResume = ({ onBack }) => {
                           src={`${backend}/api/get_master_preview?page=${page}&ts=${saveCount}`}
                           className={`w-full rounded-lg ${isLoading ? "opacity-30" : ""}`}
                           onLoad={() => {
-                          setLoadingPages((p) => ({ ...p, [page]: false }));
-                          setPageErrors((e) => ({ ...e, [page]: false }));
-                          setStatus("Loaded");
+                            setLoadingPages((p) => ({ ...p, [page]: false }));
+                            setPageErrors((e) => ({ ...e, [page]: false }));
+                            setStatus("Loaded");
                           }}
                           onError={() => {
-                          setLoadingPages((p) => ({ ...p, [page]: false }));
-                          setPageErrors((e) => ({ ...e, [page]: true }));
-                          setStatus("Load failed");
+                            setLoadingPages((p) => ({ ...p, [page]: false }));
+                            setPageErrors((e) => ({ ...e, [page]: true }));
+                            setStatus("Load failed");
                           }}
                           alt={`Resume preview page ${page}`}
                       />
@@ -233,20 +250,6 @@ const MasterResume = ({ onBack }) => {
             </div>
           </div>
         </div>
-
-        <button onClick={saveResume} className="bg-[#224378] text-white rounded py-2">
-          Save
-        </button>
-
-        {showSuccessMessage && (
-          <div className="bg-green-800/90 text-white px-4 py-2 rounded mb-4">{successMessage}</div>
-        )}
-
-        {showErrorMessage && (
-          <div className="bg-red-800/90 text-white px-4 py-2 rounded mb-4 whitespace-pre-wrap">
-            {errorMessage}
-          </div>
-        )}
       </div>
     </div>
   );
