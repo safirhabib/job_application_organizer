@@ -63,11 +63,11 @@ const MasterResume = () => {
 
         const resp = await fetch(url, {
         method: "GET",
-        credentials: "include", // <-- THIS IS THE KEY
+        credentials: "include",
         });
 
         if (!resp.ok) {
-        // show backend error JSON if present
+
         let msg = `Failed to download PDF (${resp.status})`;
         try {
             const j = await resp.json();
@@ -163,7 +163,7 @@ const MasterResume = () => {
                                 )}
 
                                 <img
-                                    key={`${saveCount}-${page}`}  // force reload on saveCount change
+                                    key={`${saveCount}-${page}`}
                                     src={`${backend}/api/get_master_preview?page=${page}&ts=${saveCount}`}
                                     className={`w-full rounded-lg ${isLoading ? "opacity-30" : ""}`}
                                     onLoad={() => setLoadingPages((p) => ({ ...p, [page]: false }))}
