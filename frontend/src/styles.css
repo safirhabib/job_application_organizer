@@ -2,13 +2,44 @@
   font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
   color: #492828;
   background: #ECECEC;
+  --bg: #ECECEC;
+  --surface: #ECECEC;
+  --surface-alt: #f5f5f5;
+  --text: #492828;
+  --muted: #656D3F;
+  --border: #656D3F;
+  --primary: #84934A;
+  --primary-contrast: #ECECEC;
+  --danger: #492828;
+  --danger-contrast: #ECECEC;
+  --accent: #9bb364;
+  --shadow: 0 14px 30px rgba(73, 40, 40, 0.12);
+  --glow: rgba(132, 147, 74, 0.16);
+  --chip: rgba(73, 40, 40, 0.08);
+}
+
+:root[data-theme="dark"] {
+  --bg: #161616;
+  --surface: #1f1f1f;
+  --surface-alt: #252525;
+  --text: #f2f2f2;
+  --muted: #c1c7a2;
+  --border: #3a3a3a;
+  --primary: #9bb364;
+  --primary-contrast: #161616;
+  --danger: #c06060;
+  --danger-contrast: #161616;
+  --accent: #d2df9a;
+  --shadow: 0 20px 36px rgba(0, 0, 0, 0.35);
+  --glow: rgba(155, 179, 100, 0.12);
+  --chip: rgba(255, 255, 255, 0.08);
 }
   
   * { box-sizing: border-box; }
   html, body, #root {
     margin: 0;
     min-height: 100vh;
-    background: #ECECEC !important;
+    background: var(--bg) !important;
   }
   
   .app {
@@ -16,7 +47,8 @@
     margin: 0 auto;
     padding: 0;
     min-height: 100vh;
-    background: #ECECEC;
+    background: var(--bg);
+    color: var(--text);
   }
   .navbar {
     display: flex;
@@ -24,13 +56,13 @@
     justify-content: space-between;
     gap: 12px;
     padding: 12px 18px;
-    background: #492828;
-    border: 1px solid #656D3F;
+    background: linear-gradient(90deg, var(--surface), var(--surface-alt));
+    border: 1px solid var(--border);
   }
-  .logo { font-weight: 700; font-size: 18px; cursor: pointer; color: #ECECEC; }
+  .logo { font-weight: 700; font-size: 18px; cursor: pointer; color: var(--text); }
   .navActions { display: flex; gap: 10px; align-items: center; }
   .header { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
-  .muted { color: #656D3F; }
+  .muted { color: var(--muted); }
   
   .tabs { display: flex; gap: 8px; margin: 14px 0; flex-wrap: wrap; }
   .tab { border: 1px solid #e2e4ea; background: white; padding: 10px 12px; border-radius: 12px; cursor: pointer; }
@@ -61,10 +93,10 @@
   .form { display: grid; gap: 10px; }
   label { display: grid; gap: 6px; font-weight: 600; }
   input, textarea, select {
-    border: 1px solid #656D3F; border-radius: 12px; padding: 10px 12px;
+    border: 1px solid var(--border); border-radius: 12px; padding: 10px 12px;
     font-size: 14px; outline: none;
-    background: #ECECEC;
-    color: #492828;
+    background: var(--surface);
+    color: var(--text);
   }
   textarea { resize: vertical; }
   
@@ -74,43 +106,43 @@
   
   .list { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
   .item {
-    border: 1px solid #656D3F; border-radius: 14px; padding: 10px 12px;
-    cursor: pointer; background: #ECECEC;
+    border: 1px solid var(--border); border-radius: 14px; padding: 10px 12px;
+    cursor: pointer; background: var(--surface);
   }
-  .item.selected { border-color: #84934A; box-shadow: 0 10px 24px rgba(0,0,0,0.06); }
+  .item.selected { border-color: var(--primary); box-shadow: 0 10px 24px rgba(0,0,0,0.06); }
   .itemTop { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
   .meta { display: flex; gap: 12px; flex-wrap: wrap; font-size: 12px; color: #606770; margin-top: 6px; }
   
-  .badge { font-size: 12px; padding: 4px 10px; border-radius: 999px; border: 1px solid #656D3F; color: #492828; }
-  .badge.b1 { background: #ECECEC; }
-  .badge.b2 { background: #ECECEC; }
-  .badge.b3 { background: #ECECEC; }
-  .badge.b4 { background: #ECECEC; }
+  .badge { font-size: 12px; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--border); color: var(--text); }
+  .badge.b1 { background: var(--surface); }
+  .badge.b2 { background: var(--surface); }
+  .badge.b3 { background: var(--surface); }
+  .badge.b4 { background: var(--surface); }
   
   button {
-    border: 1px solid #656D3F;
-    background: #ECECEC;
+    border: 1px solid var(--border);
+    background: var(--surface);
     padding: 10px 12px;
     border-radius: 12px;
     cursor: pointer;
-    color: #492828;
+    color: var(--text);
   }
-  button.primary { background: #84934A; color: #ECECEC; border-color: #84934A; }
-  button.danger { background: #492828; color: #ECECEC; border-color: #492828; }
-  button.ghost { background: #ECECEC; }
+  button.primary { background: var(--primary); color: var(--primary-contrast); border-color: var(--primary); }
+  button.danger { background: var(--danger); color: var(--danger-contrast); border-color: var(--danger); }
+  button.ghost { background: var(--surface); }
   .detailHeader { display: flex; align-items: start; justify-content: space-between; gap: 12px; }
   
-  .section { margin-top: 14px; border-top: 1px solid #656D3F; padding-top: 14px; }
+  .section { margin-top: 14px; border-top: 1px solid var(--border); padding-top: 14px; }
   .sectionHeader { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
   .actions { display: flex; gap: 8px; flex-wrap: wrap; }
   .titleInput { font-weight: 700; }
   
   .logList { list-style: none; padding: 0; margin: 10px 0 0; display: grid; gap: 8px; }
-  .logItem { border: 1px solid #656D3F; border-radius: 12px; padding: 10px 12px; }
+  .logItem { border: 1px solid var(--border); border-radius: 12px; padding: 10px 12px; }
   .logTop { display: flex; justify-content: space-between; gap: 12px; }
   
-  .empty { padding: 18px; border: 1px dashed #656D3F; border-radius: 14px; background: #ECECEC; }
-  .footer { margin-top: 14px; font-size: 12px; color: #656D3F; padding: 0 20px 20px; }
+  .empty { padding: 18px; border: 1px dashed var(--border); border-radius: 14px; background: var(--surface); }
+  .footer { margin-top: 14px; font-size: 12px; color: var(--muted); padding: 0 20px 20px; }
 
   .formPage {
     display: flex;
@@ -119,8 +151,8 @@
   }
   .formCard {
     width: min(520px, 100%);
-    background: #ECECEC;
-    border: 1px solid #656D3F;
+    background: var(--surface);
+    border: 1px solid var(--border);
     border-radius: 16px;
     padding: 20px;
     box-shadow: 0 8px 20px rgba(73,40,40,0.08);
@@ -128,7 +160,7 @@
   .formHeader h2 {
     margin: 0 0 6px;
     font-size: 20px;
-    color: #492828;
+    color: var(--text);
   }
   .formStack {
     display: grid;
@@ -146,10 +178,10 @@
     align-items: center;
     gap: 8px;
     font-weight: 500;
-    color: #492828;
+    color: var(--text);
   }
   .radioRow input {
-    accent-color: #84934A;
+    accent-color: var(--primary);
   }
 
   .resumePage {
@@ -173,8 +205,8 @@
   }
   .resumeEditor,
   .resumePreview {
-    background: #ECECEC;
-    border: 1px solid #656D3F;
+    background: var(--surface);
+    border: 1px solid var(--border);
     border-radius: 16px;
     padding: 16px;
   }
@@ -186,16 +218,16 @@
   .resumeTextarea {
     width: 100%;
     min-height: 420px;
-    border: 1px solid #656D3F;
+    border: 1px solid var(--border);
     border-radius: 12px;
     padding: 12px;
-    background: #ECECEC;
-    color: #492828;
+    background: var(--surface);
+    color: var(--text);
   }
   .resumePreviewBox {
     position: relative;
-    background: #ECECEC;
-    border: 1px solid #656D3F;
+    background: var(--surface);
+    border: 1px solid var(--border);
     border-radius: 12px;
     overflow: hidden;
     min-height: 420px;
@@ -210,7 +242,7 @@
     display: grid;
     place-items: center;
     padding: 16px;
-    color: #656D3F;
+    color: var(--muted);
     text-align: center;
   }
   .resumePreviewLoading {
@@ -224,8 +256,8 @@
   .spinner {
     width: 40px;
     height: 40px;
-    border: 4px solid #656D3F;
-    border-top-color: #84934A;
+    border: 4px solid var(--border);
+    border-top-color: var(--primary);
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
   }
@@ -272,9 +304,9 @@
     display: grid;
     grid-template-rows: auto 1fr auto;
     gap: 12px;
-    border: 1px solid #656D3F;
+    border: 1px solid var(--border);
     border-radius: 14px;
-    background: #ECECEC;
+    background: linear-gradient(160deg, var(--surface), var(--surface-alt));
     padding: 14px;
     cursor: pointer;
     transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
@@ -293,7 +325,8 @@
   .jobCardImage {
     border-radius: 12px;
     overflow: hidden;
-    background: #656D3F;
+    background: var(--surface);
+    border: 1px solid var(--border);
     height: 110px;
     display: grid;
     place-items: center;
@@ -302,9 +335,9 @@
     width: 100%;
     height: 100%;
     object-fit: contain;
-    padding: 8px;
+    padding: 0;
   }
-  .jobCardBody h3 { margin: 0 0 4px; font-size: 16px; }
+  .jobCardBody h3 { margin: 0 0 4px; font-size: 16px; color: var(--text); }
   .jobCardBody .muted { font-size: 13px; }
   .jobCardHeader {
     display: flex;
@@ -317,7 +350,7 @@
     gap: 12px;
     flex-wrap: wrap;
     font-size: 12px;
-    color: #656D3F;
+    color: var(--muted);
   }
   .jobCardFooter {
     display: flex;
@@ -354,8 +387,8 @@
     color: #656D3F;
   }
   .jobSection {
-    border: 1px solid #656D3F;
-    background: #ECECEC;
+    border: 1px solid var(--border);
+    background: var(--surface);
     border-radius: 16px;
     padding: 16px;
   }
@@ -376,11 +409,11 @@
   }
   .jobLabel {
     font-weight: 600;
-    color: #656D3F;
+    color: var(--muted);
     margin-bottom: 4px;
   }
   .jobValue {
-    color: #492828;
+    color: var(--text);
   }
   .jobActions {
     display: flex;
@@ -396,8 +429,223 @@
     gap: 10px;
   }
   .jobTimelineItem {
-    border-bottom: 1px solid #656D3F;
+    border-bottom: 1px solid var(--border);
     padding-bottom: 10px;
+  }
+
+  .todoPage {
+    display: grid;
+    gap: 18px;
+  }
+  .todoHero {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .todoHero h2 {
+    margin: 0 0 4px;
+    font-size: 24px;
+  }
+  .todoStats {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .todoStatCard {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 10px 14px;
+    box-shadow: var(--shadow);
+    min-width: 110px;
+    display: grid;
+    gap: 4px;
+  }
+  .todoStatCard span {
+    font-size: 12px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .todoStatCard strong {
+    font-size: 18px;
+  }
+  .todoShell {
+    display: grid;
+    gap: 16px;
+  }
+  .todoPanel {
+    background: linear-gradient(135deg, var(--glow), transparent 50%), var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 16px;
+    box-shadow: var(--shadow);
+  }
+  .todoPanelHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+  }
+  .todoPanelHeader h3 {
+    margin: 0;
+    font-size: 16px;
+  }
+  .todoFilters {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .chip {
+    border: 1px solid var(--border);
+    background: var(--chip);
+    border-radius: 999px;
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+  .chip.active {
+    background: var(--primary);
+    color: var(--primary-contrast);
+    border-color: var(--primary);
+  }
+  .todoForm {
+    display: grid;
+    gap: 10px;
+    grid-template-columns: 1fr auto auto;
+    align-items: center;
+  }
+  .todoInput {
+    width: 100%;
+  }
+  .todoSelect {
+    min-width: 150px;
+  }
+  .todoList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 10px;
+  }
+  .todoItem {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 14px;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    background: var(--surface-alt);
+  }
+  .todoItem.done {
+    opacity: 0.65;
+  }
+  .todoCheck {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+  }
+  .todoCheck input {
+    accent-color: var(--primary);
+    width: 18px;
+    height: 18px;
+  }
+  .todoText {
+    word-break: break-word;
+  }
+  .todoMeta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .todoPriority {
+    border-radius: 999px;
+    padding: 4px 10px;
+    font-size: 12px;
+    font-weight: 600;
+    border: 1px solid var(--border);
+    background: var(--surface);
+  }
+  .todoPriority.low {
+    color: var(--muted);
+  }
+  .todoPriority.medium {
+    color: var(--primary);
+  }
+  .todoPriority.high {
+    color: var(--danger);
+  }
+
+  @media (max-width: 720px) {
+    .todoForm {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .jd-progress {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .jd-progressTrack {
+    position: relative;
+    flex: 1;
+    height: 6px;
+    border-radius: 999px;
+    background: var(--surface-alt);
+    overflow: hidden;
+  }
+  .jd-progressFill {
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, var(--primary), var(--accent));
+    transition: width 260ms ease-out;
+  }
+
+  .quoteCard {
+    border: 1px solid var(--border);
+    background: linear-gradient(135deg, var(--surface), var(--surface-alt));
+    border-radius: 16px;
+    padding: 14px 16px;
+    box-shadow: var(--shadow);
+    display: grid;
+    gap: 6px;
+  }
+  .quoteLabel {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+  }
+  .quoteText {
+    margin: 0;
+    font-size: 16px;
+    line-height: 1.5;
+    color: var(--text);
+  }
+  .quoteHighlight {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 10px;
+    background-image: linear-gradient(120deg, rgba(132, 147, 74, 0.18), rgba(132, 147, 74, 0.05));
+    background-size: 0% 100%;
+    background-repeat: no-repeat;
+    background-position: left center;
+    animation: quote-sweep 1.6s ease-in-out forwards;
+  }
+  .quoteAuthor {
+    font-size: 13px;
+    color: var(--muted);
+  }
+  @keyframes quote-sweep {
+    from { background-size: 0% 100%; }
+    to { background-size: 100% 100%; }
   }
   .jobTimelineDate {
     font-weight: 600;

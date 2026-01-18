@@ -7,6 +7,7 @@ import KanbanDashboard from "./components/KanbanDashboard";
 import MasterResume from "./components/master_resume.jsx";
 import TailoredResumeEditor from "./components/TailoredResumeEditor.jsx";
 import JobDetailPage from "./components/JobDetailPage.jsx";
+import TodoPage from "./components/TodoPage.jsx";
 import { clone_tailored_resume, update_tailored_resume } from "./components/api/api";
 
 const DEFAULT_STATUSES = ["Applied", "Interview", "Offer", "Rejection"];
@@ -24,10 +25,18 @@ const STATUS_FROM_API = {
 };
 
 export default function App() {
+  const [theme, setTheme] = useState(() => {
+    return localStorage.getItem("jao_theme") || "light";
+  });
   const [view, setView] = useState("list");
   const [page, setPage] = useState("list");
   const [apps, setApps] = useState([]);
   const [selectedId, setSelectedId] = useState(null);
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme;
+    localStorage.setItem("jao_theme", theme);
+  }, [theme]);
 
   useEffect(() => {
     const loadJobs = async () => {
@@ -127,11 +136,14 @@ export default function App() {
   }
 
   return (
-    <div className="app">
+    <div className={`app ${theme === "dark" ? "theme-dark" : ""}`}>
       <Navbar
         onDashboard={() => setPage("list")}
         onMasterResume={() => setPage("master")}
         onAdd={() => setPage("add")}
+        onTodo={() => setPage("todo")}
+        onToggleTheme={() => setTheme((t) => (t === "dark" ? "light" : "dark"))}
+        theme={theme}
       />
 
       <div className="grid">
@@ -208,6 +220,8 @@ export default function App() {
               onBack={() => setPage("list")}
             />
           )}
+
+          {page === "todo" && <TodoPage />}
         </div>
       </div>
 

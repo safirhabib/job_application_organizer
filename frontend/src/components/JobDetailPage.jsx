@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { clone_tailored_resume, get_tailored_resume } from "./api/api";
+import QuoteOfDay from "./QuoteOfDay.jsx";
 
 function formatDate(ts) {
   if (!ts) return "—";
@@ -63,6 +64,11 @@ export default function JobDetailPage({
     );
   }
 
+  const stageIndex = Math.max(0, statuses.indexOf(job.status));
+  const progressPct = statuses.length > 1
+    ? Math.round((stageIndex / (statuses.length - 1)) * 100)
+    : 0;
+
   return (
     <div className="jobPage">
       <div className="jobPageHeader">
@@ -72,6 +78,7 @@ export default function JobDetailPage({
           <p className="muted">Applied: {formatDate(job.dateApplied)}</p>
         </div>
       </div>
+      <QuoteOfDay />
 
       <div className="jobMetaRow">
         <div className="jobMetaItem">
@@ -84,6 +91,15 @@ export default function JobDetailPage({
               <option key={s} value={s}>{s}</option>
             ))}
           </select>
+        </div>
+        <div className="jobMetaItem">
+          <span>Progress</span>
+          <div className="jd-progress">
+            <div className="jd-progressTrack">
+              <div className="jd-progressFill" style={{ width: `${progressPct}%` }} />
+            </div>
+            <span>{progressPct}%</span>
+          </div>
         </div>
         <div className="jobMetaItem">
           <span>Follow-up</span>
