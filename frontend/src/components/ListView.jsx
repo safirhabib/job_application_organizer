@@ -53,8 +53,6 @@ export default function ListView({
     <section className="listView">
       <div className="listViewHeader">
         <div>
-          <h2>My Applications</h2>
-          <p className="muted">Track applications and review details at a glance.</p>
         </div>
         <div className="listViewActions">
           <label className="sortControl">
