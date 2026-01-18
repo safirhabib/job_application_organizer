@@ -17,15 +17,13 @@ Including another URLconf
 from django.contrib import admin
 from django.http import HttpResponse
 from django.urls import path, include
-from applications.views import get_master_latex, update_master_latex, get_master_preview
+from applications.views import get_master_latex, update_master_latex, get_master_preview, master_preview_meta, get_master_pdf
 
 urlpatterns = [
     path("", lambda request: HttpResponse("Job Application Organizer API", content_type="text/plain")),
     path("admin/", admin.site.urls),
-    path("api/get_master_latex", get_master_latex),
-    path("api/update_master_latex", update_master_latex),
-    path("api/get_master_preview", get_master_preview),
     path('api/', include('applications.urls')),
+
     # path("api/jobs/", JobCreateView.as_view()),#Umran
 ]
 

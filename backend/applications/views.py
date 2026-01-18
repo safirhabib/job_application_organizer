@@ -4,7 +4,8 @@ from django.views.decorators.csrf import ensure_csrf_cookie, csrf_exempt
 from django.views.decorators.http import require_http_methods
 from rest_framework import generics
 from django.contrib.auth.models import User
-from . import latex_converter
+from django.views.decorators.http import require_GET
+from .latex_converter import tex_to_pdf_bytes, pdf_page_count, pdf_page_to_png
 
 # Importing models and serializers
 from .models import MasterResume, JobApplication, TailoredResume
@@ -29,16 +30,6 @@ def get_master_latex(request):
         status=200
     )
 
-@ensure_csrf_cookie
-@require_http_methods(["GET"])
-def get_master_preview(request):
-    user = _get_or_create_demo_user(request)
-    master_resume, _ = MasterResume.objects.get_or_create(user=user)
-    latex_resume = getattr(master_resume, 'latex_source', "")
-    resume_img = latex_converter.tex_to_png(latex_resume)
-    print(resume_img)
-
-    return HttpResponse(resume_img, content_type="image/png", status=200)
 
 @csrf_exempt
 @require_http_methods(["POST"])
@@ -109,3 +100,71 @@ def _get_or_create_demo_user(request):
 class JobDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = JobApplication.objects.all()
     serializer_class = JobSerializer
+
+
+def no_cache(resp: HttpResponse) -> HttpResponse:
+    resp["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
+    resp["Pragma"] = "no-cache"
+    resp["Expires"] = "0"
+    return resp
+
+
+def get_master_latex_source_for_request(request) -> str:
+    user = _get_or_create_demo_user(request)
+    master_resume, _ = MasterResume.objects.get_or_create(user=user)
+    return getattr(master_resume, "latex_source", "") or ""
+
+
+@require_GET
+def master_preview_meta(request):
+    latex = get_master_latex_source_for_request(request)
+    try:
+        pdf_bytes = tex_to_pdf_bytes(latex)
+        pages = pdf_page_count(pdf_bytes)
+        return no_cache(JsonResponse({"pages": pages}, status=200))
+    except Exception as e:
+        return no_cache(JsonResponse({"error": str(e)}, status=500))
+
+
+@require_GET
+def get_master_preview(request):
+    page_str = request.GET.get("page", "1")
+    try:
+        page = int(page_str)
+    except ValueError:
+        return no_cache(JsonResponse({"error": "Invalid page"}, status=400))
+
+    latex = get_master_latex_source_for_request(request)
+
+    try:
+        pdf_bytes = tex_to_pdf_bytes(latex)
+        total_pages = pdf_page_count(pdf_bytes)
+
+        if page < 1 or page > total_pages:
+            return no_cache(JsonResponse({"error": f"page must be between 1 and {total_pages}"}, status=400))
+
+        png_bytes = pdf_page_to_png(pdf_bytes, page=page, resolution=200)
+        return no_cache(HttpResponse(png_bytes, content_type="image/png", status=200))
+
+    except Exception as e:
+        return no_cache(JsonResponse({"error": str(e)}, status=500))
+
+
+@require_GET
+def get_master_pdf(request):
+    latex = get_master_latex_source_for_request(request)
+    try:
+        print("PDF latex len:", len(latex))
+        print("PDF latex head:", repr(latex[:120]))
+
+        pdf_bytes = tex_to_pdf_bytes(latex)
+        resp = HttpResponse(pdf_bytes, content_type="application/pdf", status=200)
+        resp["Content-Disposition"] = 'attachment; filename="master_resume.pdf"'
+        return no_cache(resp)
+
+    except Exception as e:
+        return no_cache(JsonResponse({
+            "error": str(e),
+            "latex_len": len(latex),
+            "latex_head": latex[:120],
+        }, status=500))
