@@ -62,6 +62,7 @@ export default function App() {
         id: response.data.id,
         position: response.data.role,
         status: response.data.status.charAt(0).toUpperCase() + response.data.status.slice(1).toLowerCase(),
+        updated_at: response.data.updated_at,
       };
 
       setApps([newItem, ...apps]);
@@ -102,7 +103,10 @@ export default function App() {
       type: entry.type,
       summary: entry.summary.trim(),
     };
-    updateApp(id, { communications: [next, ...(target.communications ?? [])] });
+    updateApp(id, {
+      communications: [next, ...(target.communications ?? [])],
+      updated_at: new Date().toISOString(),
+    });
   }
 
   return (
@@ -121,7 +125,12 @@ export default function App() {
             <KanbanDashboard
               apps={apps}
               statuses={DEFAULT_STATUSES}
-              onMove={(id, newStatus) => updateApp(id, { status: newStatus })}
+              onMove={(id, newStatus) =>
+                updateApp(id, {
+                  status: newStatus,
+                  updated_at: new Date().toISOString(),
+                })
+              }
               onAddApplication={() => setTab("Add New")}
               onOpenMasterResume={() => setTab("MasterResume")}
               onView={(id) => {
@@ -147,7 +156,12 @@ export default function App() {
               selectedId={selectedId}
               onSelect={setSelectedId}
               onDelete={deleteApp}
-              onUpdate={updateApp}
+              onUpdate={(id, patch) =>
+                updateApp(id, {
+                  ...patch,
+                  updated_at: new Date().toISOString(),
+                })
+              }
               onAddCommunication={addCommunication}
             />
           )}
