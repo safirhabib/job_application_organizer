@@ -8,6 +8,7 @@ export default function KanbanDashboard({
   onAddApplication,
   onOpenMasterResume,
   onView,
+  hideActions = false,
 }) {
   function handleDragEnd(event) {
     const { active, over } = event;
@@ -24,26 +25,19 @@ export default function KanbanDashboard({
   }
 
   return (
-    <div style={{ width: "100%" }}>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          gap: 12,
-          marginBottom: 16,
-          alignItems: "center",
-        }}
-      >
-        <div style={{ fontWeight: 800, fontSize: 18 }}>Dashboard</div>
+    <div className="kanban">
+      <div className="kanbanHeader">
 
-        <div style={{ display: "flex", gap: 12 }}>
-          <button onClick={onOpenMasterResume}>Master Resume</button>
-          <button onClick={onAddApplication}>Add Application</button>
-        </div>
+        {!hideActions && (
+          <div className="kanbanActions">
+            <button onClick={onOpenMasterResume}>Master Resume</button>
+            <button onClick={onAddApplication}>Add Application</button>
+          </div>
+        )}
       </div>
 
       <DndContext onDragEnd={handleDragEnd}>
-        <div style={{ display: "flex", gap: 16, alignItems: "flex-start" }}>
+        <div className="kanbanBoard">
           {statuses.map((status) => (
             <KanbanColumn
               key={status}
