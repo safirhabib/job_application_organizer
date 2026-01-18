@@ -1,7 +1,21 @@
 import os
 import subprocess
 import tempfile
+import platform
 from io import BytesIO
+
+
+if platform.system() == "Windows":
+    # 1. Aalpesh, this helps Wand find ImageMagick
+    magick_path = r'C:\Program Files\ImageMagick-7.1.1-Q16-HDRI' 
+    os.environ['MAGICK_HOME'] = magick_path
+    
+    # 2. Aalpesh, this helps Django find 'pdflatex' (MiKTeX)
+    # Check your C: drive to make sure this path is correct for your MiKTeX version
+    latex_path = r'C:\Users\aalpe\AppData\Local\Programs\MiKTeX\miktex\bin\x64'
+    
+    # Aalpesh, we combine them into the system PATH
+    os.environ['PATH'] = magick_path + os.pathsep + latex_path + os.pathsep + os.environ['PATH']
 
 from wand.image import Image
 
