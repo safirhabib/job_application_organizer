@@ -5,6 +5,7 @@ from .views import (
     get_tailored_latex,
     update_tailored_latex,
     clone_master_to_tailored,
+    get_tailored_preview,
 )
 
 urlpatterns = [
@@ -12,5 +13,6 @@ urlpatterns = [
     path('tailored/<str:client_job_id>/', get_tailored_latex, name='get-tailored-latex'),
     path('tailored/<str:client_job_id>/update/', update_tailored_latex, name='update-tailored-latex'),
     path('tailored/<str:client_job_id>/clone/', clone_master_to_tailored, name='clone-tailored-latex'),
+    path('tailored/<str:client_job_id>/preview/', get_tailored_preview, name='tailored-preview'),
     path('jobs/<int:pk>/', JobDetailView.as_view(), name='job-detail'),
 ]

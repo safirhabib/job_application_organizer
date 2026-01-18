@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function Navbar({ onDashboard, onAdd, disableAdd = false }) {
+export default function Navbar({ onDashboard, onAdd, onMasterResume, disableAdd = false }) {
   return (
     <header className="navbar">
       <div className="logo" role="button" tabIndex={0} onClick={onDashboard}>
@@ -8,6 +8,7 @@ export default function Navbar({ onDashboard, onAdd, disableAdd = false }) {
       </div>
       <nav className="navActions">
         <button className="ghost" onClick={onDashboard}>Dashboard</button>
+        <button className="ghost" onClick={onMasterResume}>Master Resume</button>
         <button className="primary" onClick={onAdd} disabled={disableAdd}>
           Add Application
         </button>

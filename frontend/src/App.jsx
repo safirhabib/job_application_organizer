@@ -4,6 +4,9 @@ import Navbar from "./components/Navbar.jsx";
 import ListView from "./components/ListView.jsx";
 import ApplicationForm from "./components/ApplicationForm.jsx";
 import KanbanDashboard from "./components/KanbanDashboard";
+import MasterResume from "./components/master_resume.jsx";
+import TailoredResumeEditor from "./components/TailoredResumeEditor.jsx";
+import { clone_tailored_resume, update_tailored_resume } from "./components/api/api";
 
 const DEFAULT_STATUSES = ["Applied", "Interview", "Offer", "Rejection"];
 const STATUS_TO_API = {
@@ -80,7 +83,15 @@ export default function App() {
       };
 
       setApps([newItem, ...apps]);
-      setPage("list");
+      setSelectedId(newItem.id);
+
+      if (app.resumeMode === "blank") {
+        await update_tailored_resume(newItem.id, "");
+      } else {
+        await clone_tailored_resume(newItem.id);
+      }
+
+      setPage("tailored");
       setView("list");
     } catch (err) {
       console.error("Failed to save job to database:", err);
@@ -110,6 +121,7 @@ export default function App() {
     <div className="app">
       <Navbar
         onDashboard={() => setPage("list")}
+        onMasterResume={() => setPage("master")}
         onAdd={() => setPage("add")}
       />
 
@@ -148,7 +160,7 @@ export default function App() {
                   })
                 }
                 onAddApplication={() => setPage("add")}
-                onOpenMasterResume={() => {}}
+                onOpenMasterResume={() => setPage("master")}
                 onView={(id) => {
                   setSelectedId(id);
                   setView("list");
@@ -163,6 +175,17 @@ export default function App() {
               statuses={DEFAULT_STATUSES}
               onSubmit={addApp}
               onCancel={() => setPage("list")}
+            />
+          )}
+
+          {page === "master" && (
+            <MasterResume onBack={() => setPage("list")} />
+          )}
+
+          {page === "tailored" && (
+            <TailoredResumeEditor
+              job={selected}
+              onBack={() => setPage("list")}
             />
           )}
         </div>
