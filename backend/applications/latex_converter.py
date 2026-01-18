@@ -2,7 +2,6 @@ import os
 import subprocess
 import tempfile
 from io import BytesIO
-from typing import Tuple
 
 from wand.image import Image
 
@@ -12,8 +11,11 @@ def tex_to_pdf_bytes(latex_code: str) -> bytes:
     Compile LaTeX into a PDF and return PDF bytes.
     """
     env = os.environ.copy()
-
+    env = os.environ.copy()
     env["PATH"] = env.get("PATH", "") + ":/Library/TeX/texbin:/opt/homebrew/bin:/usr/texbin:/usr/local/bin"
+    env.setdefault("MAGICK_HOME", "/opt/homebrew/opt/imagemagick")
+    env.setdefault("DYLD_LIBRARY_PATH", "/opt/homebrew/opt/imagemagick/lib")
+    env.setdefault("WAND_LIBRARY", "/opt/homebrew/opt/imagemagick/lib/libMagickWand-7.Q16HDRI.dylib")
 
     with tempfile.TemporaryDirectory() as tmpdir:
         tex_path = os.path.join(tmpdir, "output.tex")
@@ -63,7 +65,7 @@ def pdf_page_to_png(pdf_bytes: bytes, page: int, resolution: int = 200) -> bytes
         with open(pdf_path, "wb") as f:
             f.write(pdf_bytes)
 
-        page_index = page - 1
+        page_index = page - 1  # 0-indexed for wand
         with Image(filename=f"{pdf_path}[{page_index}]", resolution=resolution) as img:
             img.format = "png"
             buf = BytesIO()

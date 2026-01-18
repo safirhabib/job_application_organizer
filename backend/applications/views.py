@@ -30,6 +30,21 @@ def get_master_latex(request):
         status=200
     )
 
+@ensure_csrf_cookie
+@require_http_methods(["GET"])
+def get_master_preview(request):
+    user = _get_or_create_demo_user(request)
+    master_resume, _ = MasterResume.objects.get_or_create(user=user)
+    latex_resume = getattr(master_resume, 'latex_source', "")
+    try:
+        from . import latex_converter
+        resume_img = latex_converter.tex_to_png(latex_resume)
+        return HttpResponse(resume_img, content_type="image/png", status=200)
+    except Exception:
+        return JsonResponse(
+            {"error": "Preview service unavailable. Install ImageMagick to enable."},
+            status=501,
+        )
 
 @csrf_exempt
 @require_http_methods(["POST"])
@@ -86,10 +101,29 @@ def clone_master_to_tailored(request, client_job_id):
     user = _get_or_create_demo_user(request)
     master_resume, _ = MasterResume.objects.get_or_create(user=user)
     resume, _ = TailoredResume.objects.get_or_create(client_job_id=client_job_id)
-    # Safely copying the master source to the tailored content
+
     resume.content = getattr(master_resume, 'latex_source', "")
     resume.save()
     return JsonResponse({"message": "cloned", "content": resume.content}, status=200)
+
+
+@ensure_csrf_cookie
+@require_http_methods(["GET"])
+def get_tailored_preview(request, client_job_id):
+    resume = TailoredResume.objects.filter(client_job_id=client_job_id).first()
+    if not resume:
+        return JsonResponse({"error": "Tailored resume not found"}, status=404)
+
+    latex_resume = resume.content or ""
+    try:
+        from . import latex_converter
+        resume_img = latex_converter.tex_to_png(latex_resume)
+        return HttpResponse(resume_img, content_type="image/png", status=200)
+    except Exception:
+        return JsonResponse(
+            {"error": "Preview service unavailable. Install ImageMagick to enable."},
+            status=501,
+        )
 
 def _get_or_create_demo_user(request):
     if request.user.is_authenticated:

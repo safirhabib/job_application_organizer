@@ -1,10 +1,11 @@
 from django.urls import path
-from .views import JobCreateView, JobDetailView, JobLogListCreateView  # Import the new view
+from .views import JobCreateView, JobDetailView, JobLogListCreateView
 from .views import (
     JobCreateView,
     get_tailored_latex,
     update_tailored_latex,
     clone_master_to_tailored,
+    get_tailored_preview,
 )
 from . import views
 
@@ -14,6 +15,7 @@ urlpatterns = [
     path('tailored/<str:client_job_id>/', get_tailored_latex, name='get-tailored-latex'),
     path('tailored/<str:client_job_id>/update/', update_tailored_latex, name='update-tailored-latex'),
     path('tailored/<str:client_job_id>/clone/', clone_master_to_tailored, name='clone-tailored-latex'),
+    path('tailored/<str:client_job_id>/preview/', get_tailored_preview, name='tailored-preview'),
     path('jobs/<int:pk>/', JobDetailView.as_view(), name='job-detail'),
     path("get_master_latex", views.get_master_latex),
     path("update_master_latex", views.update_master_latex),
