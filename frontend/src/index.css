@@ -28,6 +28,7 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
+  background: #f6f7fb !important;
 }
 
 
@@ -62,8 +63,5 @@ button:focus-visible {
   }
   a:hover {
     color: #747bff;
-  }
-  button {
-    /* background-color: #f9f9f9; */
   }
 }
