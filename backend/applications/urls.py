@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import JobCreateView, JobDetailView # Import the new view
+from .views import JobCreateView, JobDetailView
 from .views import (
     JobCreateView,
     get_tailored_latex,

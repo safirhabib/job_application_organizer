@@ -12,7 +12,7 @@ def tex_to_pdf_bytes(latex_code: str) -> bytes:
     Compile LaTeX into a PDF and return PDF bytes.
     """
     env = os.environ.copy()
-    # Add common TeX paths (adjust if your server differs)
+
     env["PATH"] = env.get("PATH", "") + ":/Library/TeX/texbin:/opt/homebrew/bin:/usr/texbin:/usr/local/bin"
 
     with tempfile.TemporaryDirectory() as tmpdir:
@@ -48,7 +48,7 @@ def pdf_page_count(pdf_bytes: bytes) -> int:
             f.write(pdf_bytes)
 
         with Image(filename=pdf_path) as img:
-            return len(img.sequence)  # number of pages
+            return len(img.sequence)
 
 
 def pdf_page_to_png(pdf_bytes: bytes, page: int, resolution: int = 200) -> bytes:
@@ -63,7 +63,7 @@ def pdf_page_to_png(pdf_bytes: bytes, page: int, resolution: int = 200) -> bytes
         with open(pdf_path, "wb") as f:
             f.write(pdf_bytes)
 
-        page_index = page - 1  # wand uses 0-index
+        page_index = page - 1
         with Image(filename=f"{pdf_path}[{page_index}]", resolution=resolution) as img:
             img.format = "png"
             buf = BytesIO()
