@@ -7,7 +7,7 @@ import ApplicationForm from "./components/ApplicationForm.jsx";
 import KanbanDashboard from "./components/KanbanDashboard";
 import MasterResume from "./components/master_resume.jsx";
 import TailoredResumeEditor from "./components/TailoredResumeEditor.jsx";
-import CommunicationLog from "./components/CommunicationLog.jsx";
+import JobDetailPage from "./components/JobDetailPage.jsx";
 
 import { clone_tailored_resume, update_tailored_resume } from "./components/api/api";
 
@@ -287,31 +287,6 @@ export default function App() {
       <footer className="footer">
         <span>Data is synced from the Django server.</span>
       </footer>
-    </div>
-  );
-}
-
-function JobDetailPage({ job, statuses, onUpdate, onDelete, onAddLog, onOpenTailored }) {
-  const moveNext = () => {
-    const idx = statuses.indexOf(job.status);
-    if (idx >= 0 && idx < statuses.length - 1) {
-      onUpdate({ status: statuses[idx + 1] });
-    }
-  };
-
-  return (
-    <div style={{ maxWidth: 860, margin: "0 auto" }}>
-      <h1 style={{ margin: "6px 0 10px" }}>
-        {job.company} — {job.position}
-      </h1>
-
-      {/* rest unchanged */}
-      <CommunicationLog communications={job.communications || []} onAdd={onAddLog} />
-
-      <div style={{ display: "flex", gap: 10, marginTop: 16 }}>
-        <button onClick={moveNext}>Move to Next Stage</button>
-        <button className="danger" onClick={onDelete}>Delete</button>
-      </div>
     </div>
   );
 }
