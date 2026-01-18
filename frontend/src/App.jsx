@@ -71,9 +71,21 @@ export default function App() {
     }
   }
 
-  function updateApp(id, patch) {
+  async function updateApp(id, patch) {
+    // 1. Update the UI immediately for a smooth experience, Aalpesh
     setApps(apps.map((a) => (a.id === id ? { ...a, ...patch } : a)));
-    // Note: To be fully persistent, Aalpesh, you'd add an axios.patch call here later.
+
+    // 2. If the patch contains a 'status' change, send it to Django
+    if (patch.status) {
+      try {
+        await axios.patch(`http://127.0.0.1:8000/api/jobs/${id}/`, {
+          status: patch.status.toUpperCase() // Django expects uppercase
+        });
+        console.log("Aalpesh, the database was updated successfully!");
+      } catch (err) {
+        console.error("Aalpesh, failed to sync status with backend:", err);
+      }
+    }
   }
 
   function deleteApp(id) {
