@@ -17,7 +17,7 @@ export default function Navbar({
       <nav className="navActions">
         <button className="ghost" onClick={onDashboard}>Dashboard</button>
         <button className="ghost" onClick={onMasterResume}>Master Resume</button>
-        <button className="ghost" onClick={onTodo}>Todo List</button>
+        {/* <button className="ghost" onClick={onTodo}>Todo List</button> */}
         <button className="ghost" onClick={onToggleTheme}>
           {theme === "dark" ? "Light Mode" : "Dark Mode"}
         </button>
