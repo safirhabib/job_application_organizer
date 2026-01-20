@@ -8,7 +8,7 @@ import KanbanDashboard from "./components/KanbanDashboard";
 import MasterResume from "./components/master_resume.jsx";
 import TailoredResumeEditor from "./components/TailoredResumeEditor.jsx";
 import JobDetailPage from "./components/JobDetailPage.jsx";
-main
+import StatsOverview from "./components/StatsOverview.jsx";
 import { clone_tailored_resume, update_tailored_resume } from "./components/api/api";
 
 const API_BASE = "http://127.0.0.1:8000/api";
@@ -161,6 +161,23 @@ export default function App() {
     }
   }
 
+  async function deleteLog(jobId, logId) {
+    if (!jobId || !logId) return;
+    setApps((prev) =>
+      prev.map((a) =>
+        a.id === jobId
+          ? { ...a, communications: (a.communications || []).filter((c) => c.id !== logId) }
+          : a
+      )
+    );
+
+    try {
+      await axios.delete(`${API_BASE}/jobs/${jobId}/logs/${logId}/`);
+    } catch (err) {
+      console.error("Failed to delete log entry:", err);
+    }
+  }
+
   function openJobPage(id) {
     setSelectedId(id);
     setPage("job");
@@ -204,6 +221,7 @@ export default function App() {
                 </button>
               </div>
 
+              <StatsOverview apps={apps} />
               <ListView
                 apps={apps}
                 statuses={DEFAULT_STATUSES}
@@ -228,6 +246,7 @@ export default function App() {
                 </button>
               </div>
 
+              <StatsOverview apps={apps} />
               <KanbanDashboard
                 apps={apps}
                 statuses={DEFAULT_STATUSES}
@@ -259,6 +278,7 @@ export default function App() {
               onBack={() => setPage("list")}
               onUpdate={(patch) => updateApp(selected?.id, patch)}
               onOpenResume={() => setPage("tailored")}
+              onDeleteLog={(logId) => deleteLog(selected?.id, logId)}
             />
           )}
 

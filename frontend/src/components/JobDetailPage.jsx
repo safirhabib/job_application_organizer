@@ -14,6 +14,7 @@ export default function JobDetailPage({
   onBack,
   onUpdate,
   onOpenResume,
+  onDeleteLog,
 }) {
   const [resumeMeta, setResumeMeta] = useState({ exists: false, updatedAt: null });
   const [isBusy, setIsBusy] = useState(false);
@@ -159,7 +160,18 @@ export default function JobDetailPage({
           <div className="jobTimeline">
             {job.communications.map((log) => (
               <div key={log.id} className="jobTimelineItem">
-                <div className="jobTimelineDate">{formatDate(log.timestamp)}</div>
+                <div className="jobTimelineTop">
+                  <div className="jobTimelineDate">{formatDate(log.timestamp)}</div>
+                  {onDeleteLog && (
+                    <button
+                      type="button"
+                      className="ghost btnSmall"
+                      onClick={() => onDeleteLog(log.id)}
+                    >
+                      Delete
+                    </button>
+                  )}
+                </div>
                 <div className="jobTimelineText">{log.note}</div>
               </div>
             ))}

@@ -81,10 +81,11 @@
   .meta { display: flex; gap: 12px; flex-wrap: wrap; font-size: 12px; color: #606770; margin-top: 6px; }
   
   .badge { font-size: 12px; padding: 4px 10px; border-radius: 999px; border: 1px solid #656D3F; color: #492828; }
-  .badge.b1 { background: #ECECEC; }
-  .badge.b2 { background: #ECECEC; }
-  .badge.b3 { background: #ECECEC; }
-  .badge.b4 { background: #ECECEC; }
+  .badge.b1 { background: #e2e8f0; border-color: #cbd5e1; }
+  .badge.b2 { background: #dbeafe; border-color: #93c5fd; }
+  .badge.b3 { background: #dcfce7; border-color: #86efac; }
+  .badge.b4 { background: #fee2e2; border-color: #fecaca; }
+  .kanbanStatusBadge { font-size: 11px; padding: 3px 8px; }
   
   button {
     padding: 10px 12px;
@@ -94,6 +95,7 @@
   button.primary { background: #84934A; color: #ECECEC; border-color: #84934A; }
   button.danger { background: #492828; color: #ECECEC; border-color: #492828; }
   button.ghost { background: #ECECEC; }
+  .btnSmall { padding: 6px 10px; font-size: 12px; border-radius: 999px; }
   .detailHeader { display: flex; align-items: start; justify-content: space-between; gap: 12px; }
   
   .section { margin-top: 14px; border-top: 1px solid #656D3F; padding-top: 14px; }
@@ -395,6 +397,12 @@
     border-bottom: 1px solid #656D3F;
     padding-bottom: 10px;
   }
+  .jobTimelineTop {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
   .jobTimelineDate {
     font-weight: 600;
   }
@@ -429,6 +437,35 @@
   .kanbanTopBar h2 {
     margin: 0;
     font-size: 22px;
+  }
+  .statsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+    margin: 12px 0 16px;
+  }
+  .statCard {
+    display: grid;
+    gap: 6px;
+    padding: 12px;
+    border: 1px solid #656D3F;
+    border-radius: 14px;
+    background: #ECECEC;
+  }
+  .statLabel {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #656D3F;
+  }
+  .statValue {
+    font-size: 22px;
+    font-weight: 700;
+    color: #492828;
+  }
+  .statSub {
+    font-size: 12px;
+    color: #656D3F;
   }
   .kanbanActions {
     display: flex;

@@ -207,9 +207,15 @@ class JobLogListCreateView(generics.ListCreateAPIView):
 
     def get_queryset(self):
         job_id = self.kwargs["job_id"]
-        return CommLog.objects.filter(job_id=job_id).order_by("-timestamp", "-created_at")
+        return CommLog.objects.filter(job_id=job_id).order_by("-created_at")
 
     def perform_create(self, serializer):
         job_id = self.kwargs["job_id"]
         serializer.save(job_id=job_id)
 
+class JobLogDetailView(generics.DestroyAPIView):
+    serializer_class = CommLogSerializer
+
+    def get_queryset(self):
+        job_id = self.kwargs["job_id"]
+        return CommLog.objects.filter(job_id=job_id)

@@ -14,3 +14,4 @@ class JobSerializer(serializers.ModelSerializer):
     class Meta:
         model = JobApplication
         fields = "__all__"
+
