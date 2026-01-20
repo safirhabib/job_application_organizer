@@ -1,5 +1,6 @@
 from django.urls import path
 from .views import JobCreateView, JobDetailView, JobLogListCreateView, JobLogDetailView
+
 from .views import (
     JobCreateView,
     get_tailored_latex,

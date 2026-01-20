@@ -10,7 +10,7 @@ export default function Navbar({
   disableAdd = false,
 }) {
   return (
-    <header className="navbar">
+    <header className="navbar w-full">
       <div className="logo" role="button" tabIndex={0} onClick={onDashboard}>
         Job Applications
       </div>

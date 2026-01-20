@@ -61,4 +61,9 @@ class CommLog(models.Model):
     # For Liqi Yin's US5
     job = models.ForeignKey(JobApplication, on_delete=models.CASCADE, related_name='logs')
     note = models.TextField()
+
+    timestamp = models.DateTimeField(default=timezone.now)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.job_id} @ {self.timestamp:%Y-%m-%d} - {self.note[:30]}"

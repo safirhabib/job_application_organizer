@@ -213,11 +213,9 @@ class JobLogListCreateView(generics.ListCreateAPIView):
         job_id = self.kwargs["job_id"]
         serializer.save(job_id=job_id)
 
-
 class JobLogDetailView(generics.DestroyAPIView):
     serializer_class = CommLogSerializer
 
     def get_queryset(self):
         job_id = self.kwargs["job_id"]
         return CommLog.objects.filter(job_id=job_id)
-

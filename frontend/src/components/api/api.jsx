@@ -7,43 +7,48 @@ axios.defaults.xsrfHeaderName = "X-CSRFToken";
 const backend = import.meta.env.VITE_BACKEND_URL || "http://localhost:8000";
 
 export const get_master_resume = async () => {
-  const res = await axios.get(`${backend}/api/get_master_latex`, { withCredentials: true });
+  const res = await axios.get(`${backend}/api/get_master_latex`, {
+    withCredentials: true,
+  });
+
   return {
     status: res.status,
-    data: { content: res.data.latex_source },
+    data: {
+      latex_source: res.data.latex_source ?? "",
+      created_at: res.data.created_at,
+      updated_at: res.data.updated_at,
+    },
   };
 };
 
 export const update_master_resume = async (latex_source) => {
-  let res = await axios.post(
+  const res = await axios.post(
     `${backend}/api/update_master_latex`,
     { latex_source },
     { withCredentials: true }
   );
 
-  res = res ? res.status : 404;
-
   return {
-    status: res,
-    data: { content: "success" },
+    status: res.status,
+    data: { message: res.data.message ?? "updated" },
   };
 };
 
-export const get_master_resume_image = async (latex_source) => {
-  let res = await axios.get(
+export const get_master_resume_image = async (page = 1, ts = 0) => {
+  const res = await axios.get(
     `${backend}/api/get_master_preview`,
-    { latex_source },
-    { withCredentials: true }
+    {
+      params: { page, ts },
+      withCredentials: true,
+      responseType: "blob",
+    }
   );
 
-  res = res ? res.status : 404;
-
   return {
-    status: res,
-    data: { content: res.data.latex_preview },
+    status: res.status,
+    data: res.data,
   };
-
-}
+};
 
 export const get_tailored_resume = async (clientJobId) => {
   const res = await axios.get(`${backend}/api/tailored/${clientJobId}/`, {

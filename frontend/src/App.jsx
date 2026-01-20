@@ -9,7 +9,6 @@ import MasterResume from "./components/master_resume.jsx";
 import TailoredResumeEditor from "./components/TailoredResumeEditor.jsx";
 import JobDetailPage from "./components/JobDetailPage.jsx";
 import StatsOverview from "./components/StatsOverview.jsx";
-main
 import { clone_tailored_resume, update_tailored_resume } from "./components/api/api";
 
 const API_BASE = "http://127.0.0.1:8000/api";
@@ -223,7 +222,6 @@ export default function App() {
               </div>
 
               <StatsOverview apps={apps} />
-
               <ListView
                 apps={apps}
                 statuses={DEFAULT_STATUSES}
@@ -249,7 +247,6 @@ export default function App() {
               </div>
 
               <StatsOverview apps={apps} />
-
               <KanbanDashboard
                 apps={apps}
                 statuses={DEFAULT_STATUSES}
